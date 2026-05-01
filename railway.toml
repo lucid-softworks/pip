@@ -6,6 +6,15 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
+# Only rebuild when something the server image actually depends on changes.
+# Mobile-only changes (App.tsx, src/, assets/, ios/, eas.json, etc.) won't
+# trigger a Railway redeploy.
+watchPatterns = [
+  "server/**",
+  "Dockerfile",
+  ".dockerignore",
+  "railway.toml",
+]
 
 [deploy]
 restartPolicyType = "ON_FAILURE"
