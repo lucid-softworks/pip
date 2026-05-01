@@ -26,7 +26,8 @@ import { OnboardingScreen, type OnboardingResult } from '@/screens/OnboardingScr
 import { AuthScreen } from '@/screens/AuthScreen';
 import { TabBar, type TabKey } from '@/components/TabBar';
 import { colors } from '@/theme/colors';
-import { type CourseId, makeCourseId, parseCourseId } from '@/data/courses';
+import { type CourseId, makeCourseId, parseCourseId } from '@/data/types';
+import { ContentProvider } from '@/state/ContentProvider';
 import {
   addEnrollment,
   getMe,
@@ -267,74 +268,62 @@ export default function App() {
 
   if (!ready) return <View style={styles.shell} />;
 
-  if (authPhase === 'unauth') {
-    return (
-      <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
-          <AuthScreen onAuthed={handleAuthed} />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
-
-  if (!onboarded) {
-    return (
-      <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
-          <OnboardingScreen
-            onFinish={handleOnboardingFinish}
-            initialName={accountName ?? userName}
-          />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    );
-  }
-
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
-        <View style={styles.body}>
-          {tab === 'learn' && (
-            <HomeScreen
-              activeCourseId={activeCourseId}
-              enrolledCourses={enrolledCourses}
-              userName={userName}
-              onOpenLesson={openLesson}
-              onSwitchCourse={switchCourse}
-              onEnrollCourse={enrollCourse}
+      <ContentProvider>
+        <StatusBar style="dark" />
+        <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
+          {authPhase === 'unauth' ? (
+            <AuthScreen onAuthed={handleAuthed} />
+          ) : !onboarded ? (
+            <OnboardingScreen
+              onFinish={handleOnboardingFinish}
+              initialName={accountName ?? userName}
             />
-          )}
-          {tab === 'stories' && <StoriesScreen targetLanguage={activeTarget} />}
-          {tab === 'progress' && <ProgressScreen dailyMinutes={dailyMinutes} />}
-          {tab === 'you' && (
-            <YouScreen
-              userName={userName}
-              onSignOut={handleSignOut}
-              onUpdateName={handleUpdateName}
-            />
-          )}
-        </View>
-        <TabBar active={tab} onChange={setTab} />
+          ) : (
+            <>
+              <View style={styles.body}>
+                {tab === 'learn' && (
+                  <HomeScreen
+                    activeCourseId={activeCourseId}
+                    enrolledCourses={enrolledCourses}
+                    userName={userName}
+                    onOpenLesson={openLesson}
+                    onSwitchCourse={switchCourse}
+                    onEnrollCourse={enrollCourse}
+                  />
+                )}
+                {tab === 'stories' && <StoriesScreen targetLanguage={activeTarget} />}
+                {tab === 'progress' && <ProgressScreen dailyMinutes={dailyMinutes} />}
+                {tab === 'you' && (
+                  <YouScreen
+                    userName={userName}
+                    onSignOut={handleSignOut}
+                    onUpdateName={handleUpdateName}
+                  />
+                )}
+              </View>
+              <TabBar active={tab} onChange={setTab} />
 
-        {overlay.kind === 'lesson' && (
-          <View style={styles.overlay} pointerEvents="auto">
-            <LessonScreen
-              lessonId={overlay.lessonId}
-              onExit={closeOverlay}
-              onNeedBreather={handleBreather}
-              onComplete={closeOverlay}
-            />
-          </View>
-        )}
-        {overlay.kind === 'breather' && (
-          <View style={styles.overlay} pointerEvents="auto">
-            <BreatherScreen onClose={closeOverlay} />
-          </View>
-        )}
-      </SafeAreaView>
+              {overlay.kind === 'lesson' && (
+                <View style={styles.overlay} pointerEvents="auto">
+                  <LessonScreen
+                    lessonId={overlay.lessonId}
+                    onExit={closeOverlay}
+                    onNeedBreather={handleBreather}
+                    onComplete={closeOverlay}
+                  />
+                </View>
+              )}
+              {overlay.kind === 'breather' && (
+                <View style={styles.overlay} pointerEvents="auto">
+                  <BreatherScreen onClose={closeOverlay} />
+                </View>
+              )}
+            </>
+          )}
+        </SafeAreaView>
+      </ContentProvider>
     </SafeAreaProvider>
   );
 }

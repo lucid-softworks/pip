@@ -1,19 +1,6 @@
-import type { LanguageTag } from './types';
+import type { Story } from './types.ts';
 
-export type StoryLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
-
-export type Story = {
-  id: string;
-  title: string;
-  blurb: string;
-  language: LanguageTag;
-  level: StoryLevel;
-  minutes: number;
-  thumbColor: 'butter' | 'sky' | 'lilac' | 'moss' | 'berry';
-  freeThisWeek?: boolean;
-};
-
-const stories: Story[] = [
+export const STORIES: Story[] = [
   // French
   {
     id: 'fr-story-cafe',
@@ -61,6 +48,7 @@ const stories: Story[] = [
     minutes: 8,
     thumbColor: 'berry',
   },
+
   // Spanish
   {
     id: 'es-story-panaderia',
@@ -99,12 +87,91 @@ const stories: Story[] = [
     minutes: 7,
     thumbColor: 'lilac',
   },
+
+  // Italian
+  {
+    id: 'it-story-caffe',
+    title: 'Un caffè a Trastevere',
+    blurb: 'Un cappuccino, due amici, e una mattina di sole.',
+    language: 'it-IT',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'it-story-treno',
+    title: 'Il treno per Firenze',
+    blurb: 'Una conversazione che dura tutto il viaggio.',
+    language: 'it-IT',
+    level: 'A2',
+    minutes: 6,
+    thumbColor: 'sky',
+  },
+
+  // German
+  {
+    id: 'de-story-baeckerei',
+    title: 'Frühstück bei der Bäckerei',
+    blurb: 'Brötchen, Butter, und eine kleine Verwechslung.',
+    language: 'de-DE',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'de-story-park',
+    title: 'Ein Spaziergang im Park',
+    blurb: 'Herbstblätter, ein Hund, und ein freundliches Gespräch.',
+    language: 'de-DE',
+    level: 'A2',
+    minutes: 5,
+    thumbColor: 'moss',
+  },
+
+  // Portuguese
+  {
+    id: 'pt-story-praia',
+    title: 'Uma manhã na praia',
+    blurb: 'O sol, a areia, e um café gelado que muda o dia.',
+    language: 'pt-BR',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'sky',
+    freeThisWeek: true,
+  },
+  {
+    id: 'pt-story-feira',
+    title: 'A feira de domingo',
+    blurb: 'Frutas frescas, conversas curtas, e uma receita nova.',
+    language: 'pt-BR',
+    level: 'A2',
+    minutes: 6,
+    thumbColor: 'butter',
+  },
+
+  // Dutch
+  {
+    id: 'nl-story-fiets',
+    title: 'Een ritje door Amsterdam',
+    blurb: 'Grachten, kasseien, en een onverwachte regenbui.',
+    language: 'nl-NL',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'lilac',
+    freeThisWeek: true,
+  },
+
+  // Polish
+  {
+    id: 'pl-story-rynek',
+    title: 'Rynek w Krakowie',
+    blurb: 'Gołębie, kawiarnia i pierwszy raz po polsku.',
+    language: 'pl-PL',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'berry',
+    freeThisWeek: true,
+  },
 ];
-
-export async function loadStories(): Promise<Story[]> {
-  return stories;
-}
-
-export async function loadStoriesForLanguage(language: LanguageTag): Promise<Story[]> {
-  return stories.filter((s) => s.language === language);
-}

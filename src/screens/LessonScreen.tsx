@@ -5,7 +5,7 @@ import { fonts } from '@/theme/typography';
 import { CloseIcon, LeafIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
 import { PlayIcon } from '@/components/PlayIcon';
-import { loadLesson } from '@/data/lessons';
+import { useContent } from '@/state/ContentProvider';
 import type { Lesson, TranslateTapExercise } from '@/data/types';
 import { useSpeech } from '@/hooks/useSpeech';
 import { updateProgress } from '@/api/client';
@@ -20,6 +20,7 @@ type Props = {
 type Status = 'idle' | 'correct' | 'wrong';
 
 export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: Props) {
+  const { loadLesson } = useContent();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [wrongStreak, setWrongStreak] = useState(0);
@@ -27,7 +28,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
 
   useEffect(() => {
     loadLesson(lessonId).then(setLesson);
-  }, [lessonId]);
+  }, [lessonId, loadLesson]);
 
   if (!lesson) return <View style={styles.root} />;
 

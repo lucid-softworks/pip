@@ -10,9 +10,13 @@ import {
 import Svg, { Path } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import { loadUnitsForCourse } from '@/data/lessons';
-import { type CourseId, getLanguage, parseCourseId } from '@/data/courses';
-import type { LessonStub, Unit } from '@/data/types';
+import { useContent } from '@/state/ContentProvider';
+import {
+  type CourseId,
+  type LessonStub,
+  type Unit,
+  parseCourseId,
+} from '@/data/types';
 import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
 import { PlayIcon } from '@/components/PlayIcon';
 import { LanguageSheet } from '@/components/LanguageSheet';
@@ -38,13 +42,14 @@ export function HomeScreen({
   onSwitchCourse,
   onEnrollCourse,
 }: Props) {
+  const { loadUnitsForCourse, getLanguage } = useContent();
   const [units, setUnits] = useState<Unit[] | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     setUnits(null);
     loadUnitsForCourse(activeCourseId).then(setUnits);
-  }, [activeCourseId]);
+  }, [activeCourseId, loadUnitsForCourse]);
 
   const target = getLanguage(parseCourseId(activeCourseId).target);
 

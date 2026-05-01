@@ -1,19 +1,11 @@
-import type { Lesson, TranslateTapExercise, Unit } from './types';
 import {
-  type Course,
+  type Curriculum,
   type CourseId,
-  LANGUAGES,
+  type LanguageTag,
+  type TranslateTapExercise,
+  type Lesson,
   makeCourseId,
-} from './courses';
-
-type Curriculum = {
-  source: string;
-  target: string;
-  units: Unit[];
-  lessons: Record<string, Lesson>;
-};
-
-// ---------- Builder ----------
+} from './types.ts';
 
 type GreetingExercise = {
   prompt: string;
@@ -24,10 +16,10 @@ type GreetingExercise = {
 };
 
 type GreetingsArgs = {
-  prefix: string; // e.g. "fr"
-  source: string;
-  target: string;
-  unitName: string; // e.g. "Hello, world"
+  prefix: string;
+  source: LanguageTag;
+  target: LanguageTag;
+  unitName: string;
   exercises: GreetingExercise[];
 };
 
@@ -90,8 +82,6 @@ function makeGreetingsCurriculum({
     lessons: { [lessonId]: greetings },
   };
 }
-
-// ---------- Curricula ----------
 
 const french = makeGreetingsCurriculum({
   prefix: 'fr',
@@ -401,36 +391,16 @@ const polish = makeGreetingsCurriculum({
   ],
 });
 
-// ---------- Registry ----------
+export const ALL_CURRICULA: Curriculum[] = [
+  french,
+  spanish,
+  italian,
+  german,
+  portuguese,
+  dutch,
+  polish,
+];
 
-const ALL_CURRICULA: Curriculum[] = [french, spanish, italian, german, portuguese, dutch, polish];
-
-const CURRICULA: Record<CourseId, Curriculum> = Object.fromEntries(
+export const CURRICULA_BY_ID: Record<CourseId, Curriculum> = Object.fromEntries(
   ALL_CURRICULA.map((c) => [makeCourseId(c.source, c.target), c]),
 );
-
-const POSSIBLE_TARGETS = LANGUAGES.filter((l) => l.code !== 'en-US').map((l) => l.code);
-
-export async function loadUnitsForCourse(id: CourseId): Promise<Unit[]> {
-  return CURRICULA[id]?.units ?? [];
-}
-
-export async function loadLesson(id: string): Promise<Lesson | null> {
-  for (const c of Object.values(CURRICULA)) {
-    const lesson = c.lessons[id];
-    if (lesson) return lesson;
-  }
-  return null;
-}
-
-export async function loadCourses(source = 'en-US'): Promise<Course[]> {
-  return POSSIBLE_TARGETS.map((target) => {
-    const id = makeCourseId(source, target);
-    return {
-      id,
-      source,
-      target,
-      available: !!CURRICULA[id],
-    };
-  });
-}

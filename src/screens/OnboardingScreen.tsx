@@ -12,13 +12,8 @@ import {
 import Svg, { Path } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import {
-  type Course,
-  type CourseId,
-  getLanguage,
-  makeCourseId,
-} from '@/data/courses';
-import { loadCourses } from '@/data/lessons';
+import { useContent } from '@/state/ContentProvider';
+import { type Course, type CourseId, makeCourseId } from '@/data/types';
 import { CheckIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
 
@@ -160,10 +155,8 @@ function LanguageStep({
   onPick: (id: CourseId) => void;
   onNext: () => void;
 }) {
-  const [courses, setCourses] = useState<Course[] | null>(null);
-  useEffect(() => {
-    loadCourses().then(setCourses);
-  }, []);
+  const { getCourses, getLanguage } = useContent();
+  const courses = getCourses();
 
   return (
     <View style={styles.body}>
@@ -176,7 +169,7 @@ function LanguageStep({
         contentContainerStyle={{ gap: 10 }}
         showsVerticalScrollIndicator={false}
       >
-        {courses?.map((c) => {
+        {courses.map((c) => {
           const target = getLanguage(c.target);
           const isPicked = c.id === selected;
           const disabled = !c.available;
@@ -322,6 +315,7 @@ function CompleteStep({
   minutes: number;
   onFinish: () => void;
 }) {
+  const { getLanguage } = useContent();
   const target = getLanguage(courseId.split(':')[1]);
   return (
     <View style={styles.body}>

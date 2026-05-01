@@ -1,4 +1,5 @@
-// Shapes shared by mobile and server. Keep in sync with server/src/content/types.ts.
+// Content types — mirror the mobile-side definitions. Kept here so the server
+// is the source of truth for the shapes it serves.
 
 export type LanguageTag = string;
 
@@ -9,6 +10,10 @@ export type LanguageMeta = {
 };
 
 export type CourseId = string;
+
+export function makeCourseId(source: LanguageTag, target: LanguageTag): CourseId {
+  return `${source}:${target}`;
+}
 
 export type Course = {
   id: CourseId;
@@ -89,13 +94,3 @@ export type Manifest = {
   languages: LanguageMeta[];
   courses: Course[];
 };
-
-// CourseId helpers — id format is `<source>:<target>`.
-export function makeCourseId(source: LanguageTag, target: LanguageTag): CourseId {
-  return `${source}:${target}`;
-}
-
-export function parseCourseId(id: CourseId): { source: LanguageTag; target: LanguageTag } {
-  const [source, target] = id.split(':');
-  return { source, target };
-}

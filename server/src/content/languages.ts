@@ -1,13 +1,5 @@
-import type { LanguageTag } from './types';
+import type { LanguageMeta } from './types.ts';
 
-export type LanguageMeta = {
-  code: LanguageTag;
-  name: string;
-  flag: string;
-};
-
-// Catalog of every language pip knows about, regardless of whether a curriculum exists yet.
-// Keep in roughly Duolingo-like presentation order: big ones first, then alphabetical.
 export const LANGUAGES: LanguageMeta[] = [
   { code: 'en-US', name: 'English', flag: '🇬🇧' },
 
@@ -44,7 +36,7 @@ export const LANGUAGES: LanguageMeta[] = [
   { code: 'da-DK', name: 'Danish', flag: '🇩🇰' },
   { code: 'fi-FI', name: 'Finnish', flag: '🇫🇮' },
 
-  // Middle East / smaller
+  // Middle East
   { code: 'ar-SA', name: 'Arabic', flag: '🇸🇦' },
   { code: 'he-IL', name: 'Hebrew', flag: '🇮🇱' },
 
@@ -53,25 +45,3 @@ export const LANGUAGES: LanguageMeta[] = [
   { code: 'ga-IE', name: 'Irish', flag: '🇮🇪' },
   { code: 'ca-ES', name: 'Catalan', flag: '🇪🇸' },
 ];
-
-export function getLanguage(code: LanguageTag): LanguageMeta {
-  return LANGUAGES.find((l) => l.code === code) ?? { code, name: code, flag: '🌐' };
-}
-
-export type CourseId = string;
-
-export function makeCourseId(source: LanguageTag, target: LanguageTag): CourseId {
-  return `${source}:${target}`;
-}
-
-export function parseCourseId(id: CourseId): { source: LanguageTag; target: LanguageTag } {
-  const [source, target] = id.split(':');
-  return { source, target };
-}
-
-export type Course = {
-  id: CourseId;
-  source: LanguageTag;
-  target: LanguageTag;
-  available: boolean;
-};

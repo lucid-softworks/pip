@@ -9,9 +9,8 @@ import {
 import Svg, { Path } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import { loadStoriesForLanguage, type Story } from '@/data/stories';
-import { getLanguage } from '@/data/courses';
-import type { LanguageTag } from '@/data/types';
+import { useContent } from '@/state/ContentProvider';
+import type { LanguageTag, Story } from '@/data/types';
 import { CheckIcon, ClockIcon } from '@/components/Icons';
 
 type Props = {
@@ -27,13 +26,14 @@ const THUMB_COLOR_MAP: Record<Story['thumbColor'], { bg: string; fg: string }> =
 };
 
 export function StoriesScreen({ targetLanguage }: Props) {
+  const { loadStoriesForLanguage, getLanguage } = useContent();
   const [stories, setStories] = useState<Story[] | null>(null);
   const lang = getLanguage(targetLanguage);
 
   useEffect(() => {
     setStories(null);
     loadStoriesForLanguage(targetLanguage).then(setStories);
-  }, [targetLanguage]);
+  }, [targetLanguage, loadStoriesForLanguage]);
 
   return (
     <View style={styles.root}>

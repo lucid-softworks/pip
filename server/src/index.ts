@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { auth } from './auth.ts';
 import { env } from './env.ts';
 import { stateRoutes } from './routes/state.ts';
+import { contentRoutes } from './routes/content.ts';
 
 const app = new Elysia()
   .get('/', () => ({ ok: true, name: 'pip-server', version: '0.1.0' }))
@@ -18,6 +19,7 @@ const app = new Elysia()
     return { user: result.user, session: result.session };
   })
   .use(stateRoutes)
+  .use(contentRoutes)
   .listen(env.PORT);
 
 console.log(`pip-server listening on http://localhost:${env.PORT}`);

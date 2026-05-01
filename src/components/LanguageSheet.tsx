@@ -4,12 +4,8 @@ import Svg, { Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import {
-  type Course,
-  type CourseId,
-  getLanguage,
-} from '@/data/courses';
-import { loadCourses } from '@/data/lessons';
+import type { Course, CourseId } from '@/data/types';
+import { useContent } from '@/state/ContentProvider';
 import { CheckIcon } from '@/components/Icons';
 
 type Props = {
@@ -31,12 +27,9 @@ export function LanguageSheet({
   onSwitchCourse,
   onEnrollCourse,
 }: Props) {
+  const { getCourses, getLanguage } = useContent();
+  const courses = getCourses();
   const [mode, setMode] = useState<Mode>('switch');
-  const [courses, setCourses] = useState<Course[] | null>(null);
-
-  useEffect(() => {
-    loadCourses().then(setCourses);
-  }, []);
 
   useEffect(() => {
     if (!visible) {
@@ -45,8 +38,8 @@ export function LanguageSheet({
     }
   }, [visible]);
 
-  const enrolled = courses?.filter((c) => enrolledCourses.has(c.id)) ?? [];
-  const addable = courses?.filter((c) => !enrolledCourses.has(c.id)) ?? [];
+  const enrolled = courses.filter((c) => enrolledCourses.has(c.id));
+  const addable = courses.filter((c) => !enrolledCourses.has(c.id));
 
   return (
     <Modal
@@ -138,6 +131,7 @@ function CourseRow({
   active: boolean;
   onPress: () => void;
 }) {
+  const { getLanguage } = useContent();
   const target = getLanguage(course.target);
   const source = getLanguage(course.source);
   return (
@@ -160,6 +154,7 @@ function CourseRow({
 }
 
 function AddableRow({ course, onPress }: { course: Course; onPress: () => void }) {
+  const { getLanguage } = useContent();
   const target = getLanguage(course.target);
   const source = getLanguage(course.source);
   const disabled = !course.available;
