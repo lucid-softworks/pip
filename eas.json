@@ -14,13 +14,26 @@
         "simulator": true
       },
       "env": {
+        "EXPO_PUBLIC_API_URL": "https://pip-production-4ae2.up.railway.app"
+      }
+    },
+    "preview-lan": {
+      "distribution": "internal",
+      "developmentClient": false,
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      },
+      "env": {
         "EXPO_PUBLIC_API_URL": "http://192.168.0.108:39443"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://CHANGE-ME.example.com"
+        "EXPO_PUBLIC_API_URL": "https://pip-production-4ae2.up.railway.app"
       }
     }
   },
