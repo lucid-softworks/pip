@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pip-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pip
+      POSTGRES_PASSWORD: pip_dev_password
+      POSTGRES_DB: pip
+    ports:
+      # Random non-default port to avoid conflicts with any local Postgres.
+      - "54327:5432"
+    volumes:
+      - pip_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pip -d pip"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:latest
+    container_name: pip-adminer
+    restart: unless-stopped
+    ports:
+      - "18102:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: hever
+
+volumes:
+  pip_pg_data:
