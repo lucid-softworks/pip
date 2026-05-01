@@ -1,0 +1,28 @@
+# Mobile app — not in the server image.
+src/
+ios/
+android/
+assets/
+App.tsx
+app.json
+babel.config.js
+eas.json
+index.ts
+package.json
+pnpm-lock.yaml
+tsconfig.json
+
+# Local artifacts
+node_modules/
+**/.expo/
+**/dist/
+
+# Server-side noise
+server/node_modules/
+server/.env
+server/.env.local
+**/.DS_Store
+
+# Git
+.git/
+.gitignore

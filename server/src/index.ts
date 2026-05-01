@@ -1,8 +1,12 @@
 import { Elysia } from 'elysia';
 import { auth } from './auth.ts';
 import { env } from './env.ts';
+import { runMigrations } from './db/migrate.ts';
 import { stateRoutes } from './routes/state.ts';
 import { contentRoutes } from './routes/content.ts';
+
+await runMigrations();
+console.log('migrations: up to date');
 
 const app = new Elysia()
   .get('/', () => ({ ok: true, name: 'pip-server', version: '0.1.0' }))

@@ -23,7 +23,8 @@ export class ApiError extends Error {
 
 export class NetworkError extends Error {
   constructor(public cause: unknown, public url: string = API_BASE_URL) {
-    super(`Couldn't reach pip-server at ${url}. Is it running and on the same network?`);
+    const detail = cause instanceof Error ? cause.message : String(cause ?? 'unknown');
+    super(`Couldn't reach pip-server at ${url}\n\n${detail}`);
   }
 }
 

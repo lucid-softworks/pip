@@ -1,0 +1,14 @@
+# Railway service config for pip-server.
+# Provision a Postgres plugin alongside this service and Railway will inject
+# DATABASE_URL automatically. Set BETTER_AUTH_SECRET, BETTER_AUTH_URL (the
+# public Railway URL of this service), and TRUSTED_ORIGINS in the dashboard.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+healthcheckPath = "/"
+healthcheckTimeout = 30
