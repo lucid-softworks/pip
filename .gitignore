@@ -1,0 +1,31 @@
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Native
+ios/Pods/
+ios/build/
+**/xcuserdata/
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+
+# macOS
+.DS_Store
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Editor
+.vscode/
+.idea/

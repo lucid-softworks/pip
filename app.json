@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Pip",
+    "slug": "pip",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "pip",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "me.wvvw.pip"
+    },
+    "android": {
+      "package": "me.wvvw.pip",
+      "adaptiveIcon": {
+        "backgroundColor": "#F6EFE0"
+      }
+    },
+    "splash": {
+      "backgroundColor": "#F6EFE0",
+      "resizeMode": "contain"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-splash-screen"
+    ]
+  }
+}
