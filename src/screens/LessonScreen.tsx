@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { CloseIcon, LeafIcon } from '@/components/Icons';
@@ -28,7 +27,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
     loadLesson(lessonId).then(setLesson);
   }, [lessonId]);
 
-  if (!lesson) return <SafeAreaView style={styles.root} />;
+  if (!lesson) return <View style={styles.root} />;
 
   const exercise = lesson.exercises[exerciseIndex] as TranslateTapExercise;
   const progress = (exerciseIndex + 1) / lesson.exercises.length;
@@ -55,7 +54,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
   };
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <View style={styles.root}>
       <View style={styles.topRow}>
         <Pressable style={styles.iconBtn} onPress={onExit} hitSlop={8}>
           <CloseIcon size={18} color={colors.muted} />
@@ -75,7 +74,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
         onResult={handleResult}
         onNext={handleNext}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

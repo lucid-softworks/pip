@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { CloseIcon } from '@/components/Icons';
@@ -25,7 +24,7 @@ export function BreatherScreen({ onClose }: Props) {
   const seconds = secondsLeft % 60;
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <View style={styles.root}>
       <View style={styles.top}>
         <Pressable style={styles.iconBtn} onPress={onClose} hitSlop={8}>
           <CloseIcon size={18} color={colors.muted} />
@@ -73,7 +72,7 @@ export function BreatherScreen({ onClose }: Props) {
           </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

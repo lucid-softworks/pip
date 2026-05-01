@@ -7,46 +7,70 @@ import {
   View,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import { loadUnits } from '@/data/lessons';
+import { loadUnitsForCourse } from '@/data/lessons';
+import { type CourseId, getLanguage, parseCourseId } from '@/data/courses';
 import type { LessonStub, Unit } from '@/data/types';
 import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
 import { PlayIcon } from '@/components/PlayIcon';
+import { LanguageSheet } from '@/components/LanguageSheet';
 
 type Props = {
+  activeCourseId: CourseId;
+  enrolledCourses: Set<CourseId>;
+  userName: string;
   onOpenLesson: (lessonId: string) => void;
+  onSwitchCourse: (id: CourseId) => void;
+  onEnrollCourse: (id: CourseId) => void;
 };
 
 const WEEK = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const TODAY_INDEX = 4;
 const DONE_DAYS = new Set([0, 1, 2, 3]);
 
-export function HomeScreen({ onOpenLesson }: Props) {
+export function HomeScreen({
+  activeCourseId,
+  enrolledCourses,
+  userName,
+  onOpenLesson,
+  onSwitchCourse,
+  onEnrollCourse,
+}: Props) {
   const [units, setUnits] = useState<Unit[] | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
-    loadUnits().then(setUnits);
-  }, []);
+    setUnits(null);
+    loadUnitsForCourse(activeCourseId).then(setUnits);
+  }, [activeCourseId]);
 
-  if (!units) return <View style={styles.root} />;
+  const target = getLanguage(parseCourseId(activeCourseId).target);
+
+  if (!units || units.length === 0) return <View style={styles.root} />;
 
   const unit = units[0];
   const currentLesson = unit.lessons.find((l) => l.state === 'current') ?? unit.lessons[0];
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <View style={styles.root}>
       <View style={styles.body}>
         <View style={styles.topRow}>
-          <View style={styles.greet}>
-            <Text style={styles.greetHi}>Welcome back,</Text>
-            <Text style={styles.greetWho}>Luna.</Text>
-          </View>
+          <Pressable style={styles.langChip} onPress={() => setSheetOpen(true)}>
+            <Text style={styles.langChipFlag}>{target.flag}</Text>
+            <Text style={styles.langChipName}>{target.name}</Text>
+            <ChevronDown />
+          </Pressable>
           <View style={styles.habitPill}>
             <LeafIcon size={14} color={colors.moss} />
             <Text style={styles.habitPillText}>240 words</Text>
           </View>
+        </View>
+
+        <View style={styles.greetRow}>
+          <Text style={styles.greetHi}>Welcome back,</Text>
+          <Text style={styles.greetWho}>{userName}.</Text>
         </View>
 
         <View style={styles.encourage}>
@@ -140,8 +164,29 @@ export function HomeScreen({ onOpenLesson }: Props) {
         </ScrollView>
       </View>
 
-      <TabBar />
-    </SafeAreaView>
+      <LanguageSheet
+        visible={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        activeCourseId={activeCourseId}
+        enrolledCourses={enrolledCourses}
+        onSwitchCourse={onSwitchCourse}
+        onEnrollCourse={onEnrollCourse}
+      />
+    </View>
+  );
+}
+
+function ChevronDown() {
+  return (
+    <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M7 10 L12 15 L17 10"
+        stroke={colors.muted}
+        strokeWidth={2.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
   );
 }
 
@@ -180,32 +225,6 @@ function LessonRow({ stub, onPress }: { stub: LessonStub; onPress: () => void })
   );
 }
 
-function TabBar() {
-  return (
-    <View style={styles.tabbar}>
-      {[
-        { key: 'learn', label: 'Learn', active: true },
-        { key: 'stories', label: 'Stories' },
-        { key: 'progress', label: 'Progress' },
-        { key: 'you', label: 'You' },
-      ].map((t) => (
-        <View key={t.key} style={styles.tab}>
-          {t.active && <View style={styles.tabActiveBar} />}
-          <View style={styles.tabIconBox}>
-            <View
-              style={[
-                styles.tabIconDot,
-                { backgroundColor: t.active ? colors.primary : colors.muted },
-              ]}
-            />
-          </View>
-          <Text style={[styles.tabLabel, t.active && styles.tabLabelActive]}>{t.label}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -218,20 +237,30 @@ const styles = StyleSheet.create({
   topRow: {
     paddingHorizontal: 22,
     paddingTop: 14,
-    paddingBottom: 16,
+    paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 12,
   },
-  greet: { flex: 1, minWidth: 0 },
-  greetHi: { fontSize: 12, color: colors.muted, fontFamily: fonts.bodyBold },
-  greetWho: {
-    fontSize: 26,
+  langChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingVertical: 8,
+    backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: 999,
+  },
+  langChipFlag: { fontSize: 18 },
+  langChipName: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 13,
     color: colors.ink,
-    fontFamily: fonts.display,
-    letterSpacing: -0.8,
-    lineHeight: 30,
+    letterSpacing: -0.1,
   },
   habitPill: {
     flexDirection: 'row',
@@ -243,6 +272,18 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   habitPillText: { fontSize: 12, color: colors.moss, fontFamily: fonts.bodyHeavy },
+  greetRow: {
+    paddingHorizontal: 22,
+    paddingBottom: 16,
+  },
+  greetHi: { fontSize: 12, color: colors.muted, fontFamily: fonts.bodyBold },
+  greetWho: {
+    fontSize: 26,
+    color: colors.ink,
+    fontFamily: fonts.display,
+    letterSpacing: -0.8,
+    lineHeight: 30,
+  },
   encourage: {
     marginHorizontal: 22,
     marginBottom: 18,
@@ -449,49 +490,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
-  tabbar: {
-    height: 76,
-    paddingTop: 8,
-    paddingHorizontal: 16,
-    paddingBottom: 18,
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: colors.line,
-    backgroundColor: colors.paper,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 3,
-    paddingVertical: 6,
-  },
-  tabActiveBar: {
-    position: 'absolute',
-    top: 0,
-    width: 24,
-    height: 3,
-    backgroundColor: colors.primary,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  tabIconBox: {
-    width: 22,
-    height: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabIconDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 4,
-    opacity: 0.6,
-  },
-  tabLabel: {
-    fontSize: 10,
-    color: colors.muted,
-    fontFamily: fonts.bodyHeavy,
-    letterSpacing: 0.2,
-  },
-  tabLabelActive: { color: colors.primary },
 });
