@@ -3,15 +3,11 @@ node_modules/
 dist/
 web-build/
 
-# Native
-ios/Pods/
-ios/build/
-**/xcuserdata/
-android/build/
-android/app/build/
-android/.gradle/
-android/.idea/
-android/local.properties
+# Native — CNG: prebuild regenerates these from app.json on demand.
+# Run `pnpm exec expo prebuild` (or just `pnpm ios` / `pnpm android` which
+# auto-prebuilds when the folder is missing).
+/ios
+/android
 
 # macOS
 .DS_Store

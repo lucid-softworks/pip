@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "pip",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": false,
@@ -17,8 +16,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F6EFE0"
-      },
-      "usesCleartextTraffic": true
+      }
     },
     "splash": {
       "image": "./assets/splash-icon.png",
