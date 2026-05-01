@@ -159,6 +159,12 @@ export default function App() {
     [applyRemoteState],
   );
 
+  const handleUpdateName = useCallback(async (name: string) => {
+    setUserName(name);
+    await setPrefs({ userName: name });
+    updateProfile({ preferredName: name }).catch(() => {});
+  }, []);
+
   const handleSignOut = useCallback(async () => {
     await signOut();
     await clearPrefs();
@@ -304,7 +310,11 @@ export default function App() {
           {tab === 'stories' && <StoriesScreen targetLanguage={activeTarget} />}
           {tab === 'progress' && <ProgressScreen dailyMinutes={dailyMinutes} />}
           {tab === 'you' && (
-            <YouScreen userName={userName} onSignOut={handleSignOut} />
+            <YouScreen
+              userName={userName}
+              onSignOut={handleSignOut}
+              onUpdateName={handleUpdateName}
+            />
           )}
         </View>
         <TabBar active={tab} onChange={setTab} />

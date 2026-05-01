@@ -1,27 +1,51 @@
 import { useState } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
+  TextInput,
   View,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 
 type Props = {
   userName: string;
   onSignOut: () => void | Promise<void>;
+  onUpdateName: (name: string) => void | Promise<void>;
 };
 
-export function YouScreen({ userName, onSignOut }: Props) {
+export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
   const [reduceMotion, setReduceMotion] = useState(false);
   const [slowSpeech, setSlowSpeech] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
+  const [editingName, setEditingName] = useState(false);
+  const [draftName, setDraftName] = useState(userName);
 
   const initial = userName.trim().charAt(0).toUpperCase() || 'F';
+
+  const openEditName = () => {
+    setDraftName(userName);
+    setEditingName(true);
+  };
+
+  const saveName = async () => {
+    const next = draftName.trim();
+    if (!next || next === userName) {
+      setEditingName(false);
+      return;
+    }
+    setEditingName(false);
+    await onUpdateName(next);
+  };
 
   return (
     <View style={styles.root}>
@@ -35,15 +59,16 @@ export function YouScreen({ userName, onSignOut }: Props) {
         contentContainerStyle={styles.scrollInner}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.profile}>
+        <Pressable style={styles.profile} onPress={openEditName}>
           <View style={styles.avatar}>
             <Text style={styles.avatarLetter}>{initial}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.profileName}>{userName}</Text>
-            <Text style={styles.profileMeta}>Free, the whole way · joined this week</Text>
+            <Text style={styles.profileMeta}>Tap to edit · free, the whole way</Text>
           </View>
-        </View>
+          <ChevronRight />
+        </Pressable>
 
         <Text style={styles.helperHint}>
           Tap the language chip on Home to switch courses or add a new language.
@@ -118,7 +143,79 @@ export function YouScreen({ userName, onSignOut }: Props) {
 
         <Text style={styles.version}>v0.1.0 · prerelease</Text>
       </ScrollView>
+
+      <Modal
+        visible={editingName}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setEditingName(false)}
+        statusBarTranslucent
+      >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <View style={styles.modalRoot}>
+            <Pressable style={styles.modalBackdrop} onPress={() => setEditingName(false)} />
+            <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
+              <View style={styles.sheet}>
+                <View style={styles.sheetHandle} />
+                <Text style={styles.sheetTitle}>What should we call you?</Text>
+                <Text style={styles.sheetSubtitle}>
+                  Whatever you'd like — lowercase is fine, we won't fix it.
+                </Text>
+                <TextInput
+                  value={draftName}
+                  onChangeText={setDraftName}
+                  style={styles.sheetInput}
+                  autoFocus
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  maxLength={24}
+                  placeholder="Friend"
+                  placeholderTextColor={colors.muted}
+                  returnKeyType="done"
+                  onSubmitEditing={saveName}
+                />
+                <View style={styles.sheetActions}>
+                  <Pressable
+                    style={[styles.sheetBtn, styles.sheetBtnGhost]}
+                    onPress={() => setEditingName(false)}
+                  >
+                    <Text style={styles.sheetBtnGhostText}>Cancel</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.sheetBtn,
+                      styles.sheetBtnPrimary,
+                      !draftName.trim() && styles.sheetBtnDisabled,
+                    ]}
+                    onPress={saveName}
+                    disabled={!draftName.trim()}
+                  >
+                    <Text style={styles.sheetBtnPrimaryText}>Save</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </SafeAreaView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
+  );
+}
+
+function ChevronRight() {
+  return (
+    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M9 6 L15 12 L9 18"
+        stroke={colors.muted}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
   );
 }
 
@@ -255,5 +352,93 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.muted,
     marginTop: 8,
+  },
+
+  // Edit-name modal
+  modalRoot: { flex: 1 },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(42, 36, 24, 0.45)',
+  },
+  sheetWrap: {
+    backgroundColor: colors.paper,
+  },
+  sheet: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    backgroundColor: colors.paper,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+  },
+  sheetHandle: {
+    alignSelf: 'center',
+    width: 44,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.line,
+    marginBottom: 14,
+  },
+  sheetTitle: {
+    fontFamily: fonts.display,
+    fontSize: 22,
+    color: colors.ink,
+    letterSpacing: -0.5,
+    marginBottom: 6,
+  },
+  sheetSubtitle: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.muted,
+    lineHeight: 18,
+    marginBottom: 16,
+  },
+  sheetInput: {
+    height: 56,
+    paddingHorizontal: 16,
+    backgroundColor: colors.paper,
+    borderWidth: 1.5,
+    borderColor: colors.line,
+    borderRadius: 14,
+    fontFamily: fonts.display,
+    fontSize: 22,
+    color: colors.ink,
+    letterSpacing: -0.5,
+    marginBottom: 14,
+  },
+  sheetActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  sheetBtn: {
+    flex: 1,
+    height: 50,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetBtnGhost: {
+    borderWidth: 1.5,
+    borderColor: colors.line,
+  },
+  sheetBtnGhostText: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 13,
+    color: colors.muted,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  sheetBtnPrimary: {
+    backgroundColor: colors.primary,
+  },
+  sheetBtnDisabled: {
+    backgroundColor: colors.line,
+  },
+  sheetBtnPrimaryText: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 13,
+    color: colors.white,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
 });
