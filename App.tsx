@@ -24,6 +24,7 @@ import { ProgressScreen } from '@/screens/ProgressScreen';
 import { YouScreen } from '@/screens/YouScreen';
 import { OnboardingScreen, type OnboardingResult } from '@/screens/OnboardingScreen';
 import { AuthScreen } from '@/screens/AuthScreen';
+import { CourseWelcome } from '@/screens/CourseWelcome';
 import { TabBar, type TabKey } from '@/components/TabBar';
 import { colors } from '@/theme/colors';
 import { type CourseId, makeCourseId, parseCourseId } from '@/data/types';
@@ -73,6 +74,8 @@ export default function App() {
     () => new Set([DEFAULT_COURSE]),
   );
   const [progress, setProgress] = useState<RemoteProgress[]>([]);
+  const [seenCourses, setSeenCourses] = useState<Set<CourseId>>(new Set());
+  const [welcomeCourseId, setWelcomeCourseId] = useState<CourseId | null>(null);
 
   // ---------- Hydration helpers ----------
 
@@ -102,6 +105,24 @@ export default function App() {
     setProgress(state.progress ?? []);
   }, []);
 
+  // Show the per-course welcome overlay the first time the user lands in any
+  // course. The overlay only fires once the user is past auth + onboarding —
+  // before that, the welcome / language steps already cover the same ground.
+  useEffect(() => {
+    if (authPhase !== 'authed' || !onboarded) return;
+    if (seenCourses.has(activeCourseId)) return;
+    setWelcomeCourseId(activeCourseId);
+  }, [activeCourseId, authPhase, onboarded, seenCourses]);
+
+  const dismissCourseWelcome = useCallback(async () => {
+    if (!welcomeCourseId) return;
+    const next = new Set(seenCourses);
+    next.add(welcomeCourseId);
+    setSeenCourses(next);
+    setWelcomeCourseId(null);
+    await setPrefs({ seenCourses: Array.from(next) });
+  }, [welcomeCourseId, seenCourses]);
+
   const refreshProgress = useCallback(async () => {
     try {
       const state = await getState();
@@ -123,6 +144,7 @@ export default function App() {
         setEnrolledCourses(new Set([prefs.activeCourseId]));
       }
       if (prefs.uiLocale) setUiLocaleState(prefs.uiLocale);
+      if (prefs.seenCourses) setSeenCourses(new Set(prefs.seenCourses));
       setOnboarded(prefs.onboarded);
 
       if (!token) {
@@ -355,6 +377,14 @@ export default function App() {
               {overlay.kind === 'breather' && (
                 <View style={styles.overlay} pointerEvents="auto">
                   <BreatherScreen onClose={closeOverlay} />
+                </View>
+              )}
+              {welcomeCourseId && overlay.kind === 'none' && (
+                <View style={styles.overlay} pointerEvents="auto">
+                  <CourseWelcome
+                    courseId={welcomeCourseId}
+                    onContinue={dismissCourseWelcome}
+                  />
                 </View>
               )}
             </>

@@ -242,6 +242,12 @@ export const it: Partial<Translations> = {
   'lang.fromSource': "Dall'{source}",
   'lang.comingSoon': 'In arrivo',
 
+  // Course welcome
+  'welcome.course.title': 'Benvenuto in {language}.',
+  'welcome.course.body':
+    'Con calma. Teniamo il tuo progresso ogni volta che torni.',
+  'welcome.course.cta': 'Iniziamo',
+
   // Errors
   'error.network': 'Impossibile raggiungere pip-server a {url}',
   'error.unauthorized': 'Accedi di nuovo, per favore.',

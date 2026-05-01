@@ -30,6 +30,8 @@ export type LocalPrefs = {
   dailyMinutes: number | null;
   activeCourseId: string | null;
   uiLocale: string | null;
+  /** Course IDs the user has already seen the welcome overlay for. */
+  seenCourses: string[];
 };
 
 export type RemoteProfile = {

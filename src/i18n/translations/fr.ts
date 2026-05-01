@@ -241,6 +241,12 @@ export const fr: Partial<Translations> = {
   'lang.fromSource': 'Depuis le {source}',
   'lang.comingSoon': 'Bientôt',
 
+  // Course welcome
+  'welcome.course.title': 'Bienvenue dans le {language}.',
+  'welcome.course.body':
+    "Prends ton temps. On garde ton progrès quand tu reviens.",
+  'welcome.course.cta': 'On commence',
+
   // Errors
   'error.network': 'Impossible de joindre pip-server à {url}',
   'error.unauthorized': 'Reconnecte-toi s\'il te plaît.',

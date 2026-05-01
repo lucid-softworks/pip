@@ -241,6 +241,12 @@ export const en = {
   'lang.fromSource': 'From {source}',
   'lang.comingSoon': 'Coming soon',
 
+  // ---------- Course welcome ----------
+  'welcome.course.title': 'Welcome to {language}.',
+  'welcome.course.body':
+    "Take it slow. We'll keep your progress whenever you come back.",
+  'welcome.course.cta': "Let's begin",
+
   // ---------- Errors ----------
   'error.network': "Couldn't reach pip-server at {url}",
   'error.unauthorized': 'Please sign in again.',

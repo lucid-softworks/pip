@@ -242,6 +242,12 @@ export const de: Partial<Translations> = {
   'lang.fromSource': 'Aus dem {source}',
   'lang.comingSoon': 'Bald',
 
+  // Course welcome
+  'welcome.course.title': 'Willkommen bei {language}.',
+  'welcome.course.body':
+    'Lass dir Zeit. Wir behalten deinen Fortschritt, wann immer du wiederkommst.',
+  'welcome.course.cta': 'Loslegen',
+
   // Errors
   'error.network': 'Pip-Server unter {url} nicht erreichbar',
   'error.unauthorized': 'Bitte melde dich nochmal an.',

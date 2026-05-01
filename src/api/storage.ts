@@ -22,6 +22,7 @@ const EMPTY_PREFS: LocalPrefs = {
   dailyMinutes: null,
   activeCourseId: null,
   uiLocale: null,
+  seenCourses: [],
 };
 
 export async function getPrefs(): Promise<LocalPrefs> {
