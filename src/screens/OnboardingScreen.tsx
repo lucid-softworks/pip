@@ -16,6 +16,7 @@ import { useContent } from '@/state/ContentProvider';
 import { type Course, type CourseId, makeCourseId } from '@/data/types';
 import { CheckIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
+import { useT } from '@/i18n';
 
 export type OnboardingResult = {
   courseId: CourseId;
@@ -34,6 +35,7 @@ const DEFAULT_COURSE: CourseId = makeCourseId('en-US', 'fr-FR');
 const DEFAULT_MINUTES = 10;
 
 export function OnboardingScreen({ onFinish, initialName }: Props) {
+  const t = useT();
   const [step, setStep] = useState(0);
   const [courseId, setCourseId] = useState<CourseId | null>(null);
   const [userName, setUserName] = useState(initialName ?? '');
@@ -80,7 +82,7 @@ export function OnboardingScreen({ onFinish, initialName }: Props) {
           <View style={styles.headerSideBtn} />
         )}
         <Pressable onPress={skipAll} hitSlop={8} style={styles.skipBtn}>
-          <Text style={styles.skipBtnText}>Skip</Text>
+          <Text style={styles.skipBtnText}>{t('common.skip')}</Text>
         </Pressable>
       </View>
 
@@ -113,22 +115,24 @@ export function OnboardingScreen({ onFinish, initialName }: Props) {
 // ---------- Step 1: Welcome ----------
 
 function WelcomeStep({ onNext }: { onNext: () => void }) {
+  const t = useT();
   return (
     <View style={styles.body}>
       <View style={styles.welcomeArt}>
         <View style={styles.welcomeArtBg} />
         <Mascot size={120} />
       </View>
-      <Text style={styles.title}>Hi. We're Pip.</Text>
+      <Text style={styles.title}>{t('onboarding.welcome.title')}</Text>
       <Text style={styles.subtitle}>
-        A kind way to learn a new language. <Text style={styles.subtitleEm}>Free, the whole way.</Text>
+        {t('onboarding.welcome.subtitleA')}{' '}
+        <Text style={styles.subtitleEm}>{t('onboarding.welcome.subtitleB')}</Text>
       </Text>
       <View style={styles.bullets}>
-        <Bullet text="No streaks, no leagues, no shame" />
-        <Bullet text="Mistakes mean rest, not punishment" />
-        <Bullet text="Stories are the only paid part" />
+        <Bullet text={t('onboarding.welcome.bullet.noStreaks')} />
+        <Bullet text={t('onboarding.welcome.bullet.noPunish')} />
+        <Bullet text={t('onboarding.welcome.bullet.storiesOnly')} />
       </View>
-      <PrimaryButton label="Get started" onPress={onNext} />
+      <PrimaryButton label={t('onboarding.welcome.cta')} onPress={onNext} />
     </View>
   );
 }
@@ -156,13 +160,14 @@ function LanguageStep({
   onNext: () => void;
 }) {
   const { getCourses, getLanguage } = useContent();
+  const t = useT();
   const courses = getCourses();
 
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>Step 1 of 4</Text>
-      <Text style={styles.title}>What would you like to learn?</Text>
-      <Text style={styles.subtitle}>Tap one. You can add more later.</Text>
+      <Text style={styles.kicker}>{t('onboarding.step.1of4')}</Text>
+      <Text style={styles.title}>{t('onboarding.language.title')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.language.subtitle')}</Text>
 
       <ScrollView
         style={styles.list}
@@ -192,7 +197,7 @@ function LanguageStep({
                   {target.name}
                 </Text>
                 <Text style={styles.langSub}>
-                  {disabled ? 'Coming soon' : 'From English'}
+                  {disabled ? t('onboarding.language.comingSoon') : t('onboarding.language.fromEnglish')}
                 </Text>
               </View>
               {isPicked && (
@@ -205,7 +210,7 @@ function LanguageStep({
         })}
       </ScrollView>
 
-      <PrimaryButton label="Continue" onPress={onNext} disabled={!selected} />
+      <PrimaryButton label={t('common.continue')} onPress={onNext} disabled={!selected} />
     </View>
   );
 }
@@ -221,17 +226,18 @@ function NameStep({
   onChange: (v: string) => void;
   onNext: () => void;
 }) {
+  const t = useT();
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>Step 2 of 4</Text>
-      <Text style={styles.title}>What should we call you?</Text>
-      <Text style={styles.subtitle}>You can change this later.</Text>
+      <Text style={styles.kicker}>{t('onboarding.step.2of4')}</Text>
+      <Text style={styles.title}>{t('onboarding.name.title')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.name.subtitle')}</Text>
 
       <View style={styles.inputWrap}>
         <TextInput
           value={value}
           onChangeText={onChange}
-          placeholder="Friend"
+          placeholder={t('onboarding.name.placeholder')}
           placeholderTextColor={colors.muted}
           style={styles.input}
           autoCapitalize="none"
@@ -243,18 +249,23 @@ function NameStep({
         />
       </View>
 
-      <PrimaryButton label="Continue" onPress={onNext} />
+      <PrimaryButton label={t('common.continue')} onPress={onNext} />
     </View>
   );
 }
 
 // ---------- Step 4: Daily rhythm ----------
 
-const RHYTHM_OPTIONS = [
-  { minutes: 3, title: '3 min', sub: 'A coffee break' },
-  { minutes: 5, title: '5 min', sub: 'A quick visit' },
-  { minutes: 10, title: '10 min', sub: 'A real chunk' },
-  { minutes: 20, title: '20 min', sub: 'A deep dive' },
+type RhythmOption = {
+  minutes: number;
+  subKey: 'onboarding.rhythm.coffeeBreak' | 'onboarding.rhythm.quickVisit' | 'onboarding.rhythm.realChunk' | 'onboarding.rhythm.deepDive';
+};
+
+const RHYTHM_OPTIONS: RhythmOption[] = [
+  { minutes: 3, subKey: 'onboarding.rhythm.coffeeBreak' },
+  { minutes: 5, subKey: 'onboarding.rhythm.quickVisit' },
+  { minutes: 10, subKey: 'onboarding.rhythm.realChunk' },
+  { minutes: 20, subKey: 'onboarding.rhythm.deepDive' },
 ];
 
 function RhythmStep({
@@ -266,13 +277,12 @@ function RhythmStep({
   onPick: (m: number) => void;
   onNext: () => void;
 }) {
+  const t = useT();
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>Step 3 of 4</Text>
-      <Text style={styles.title}>How much, on a good day?</Text>
-      <Text style={styles.subtitle}>
-        No streaks, no pressure. We'll meet you wherever you are.
-      </Text>
+      <Text style={styles.kicker}>{t('onboarding.step.3of4')}</Text>
+      <Text style={styles.title}>{t('onboarding.rhythm.title')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.rhythm.subtitle')}</Text>
 
       <View style={[styles.list, { gap: 10 }]}>
         {RHYTHM_OPTIONS.map((o) => {
@@ -284,9 +294,9 @@ function RhythmStep({
               style={[styles.rhythmRow, isPicked && styles.rhythmRowPicked]}
             >
               <Text style={[styles.rhythmTitle, isPicked && { color: colors.primary }]}>
-                {o.title}
+                {t('home.minutes', { count: o.minutes })}
               </Text>
-              <Text style={styles.rhythmSub}>{o.sub}</Text>
+              <Text style={styles.rhythmSub}>{t(o.subKey)}</Text>
               {isPicked && (
                 <View style={styles.pickedBadge}>
                   <CheckIcon size={14} color={colors.white} />
@@ -297,7 +307,7 @@ function RhythmStep({
         })}
       </View>
 
-      <PrimaryButton label="Continue" onPress={onNext} disabled={selected === null} />
+      <PrimaryButton label={t('common.continue')} onPress={onNext} disabled={selected === null} />
     </View>
   );
 }
@@ -316,6 +326,7 @@ function CompleteStep({
   onFinish: () => void;
 }) {
   const { getLanguage } = useContent();
+  const t = useT();
   const target = getLanguage(courseId.split(':')[1]);
   return (
     <View style={styles.body}>
@@ -323,17 +334,29 @@ function CompleteStep({
         <View style={styles.welcomeArtBg} />
         <Mascot size={120} />
       </View>
-      <Text style={styles.title}>You're all set, {userName}.</Text>
+      <Text style={styles.title}>{t('onboarding.complete.title', { name: userName })}</Text>
       <Text style={styles.subtitle}>
-        {target.flag} {target.name}, about {minutes} min on a good day. Stories are free for you,
-        two a week.
+        {t('onboarding.complete.subtitle', {
+          flag: target.flag,
+          language: target.name,
+          minutes,
+        })}
       </Text>
       <View style={styles.summaryCard}>
-        <SummaryRow label="Learning" value={`${target.flag}  ${target.name}`} />
-        <SummaryRow label="Rhythm" value={`${minutes} min / day`} />
-        <SummaryRow label="Pricing" value="Free, the whole way" />
+        <SummaryRow
+          label={t('onboarding.complete.summary.learning')}
+          value={`${target.flag}  ${target.name}`}
+        />
+        <SummaryRow
+          label={t('onboarding.complete.summary.rhythm')}
+          value={t('onboarding.complete.summary.minutesPerDay', { minutes })}
+        />
+        <SummaryRow
+          label={t('onboarding.complete.summary.pricing')}
+          value={t('onboarding.complete.summary.freeAll')}
+        />
       </View>
-      <PrimaryButton label="Begin" onPress={onFinish} />
+      <PrimaryButton label={t('common.begin')} onPress={onFinish} />
     </View>
   );
 }

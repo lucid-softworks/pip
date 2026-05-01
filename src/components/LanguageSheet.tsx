@@ -14,6 +14,7 @@ import { fonts } from '@/theme/typography';
 import type { Course, CourseId } from '@/data/types';
 import { useContent } from '@/state/ContentProvider';
 import { CheckIcon } from '@/components/Icons';
+import { useT } from '@/i18n';
 
 type Props = {
   visible: boolean;
@@ -35,6 +36,7 @@ export function LanguageSheet({
   onEnrollCourse,
 }: Props) {
   const { getCourses, getLanguage } = useContent();
+  const t = useT();
   const courses = getCourses();
   const [mode, setMode] = useState<Mode>('switch');
 
@@ -69,7 +71,7 @@ export function LanguageSheet({
             <View style={styles.headerSideBtn} />
           )}
           <Text style={styles.title}>
-            {mode === 'switch' ? 'Your courses' : 'Add a language'}
+            {mode === 'switch' ? t('lang.yourCourses') : t('lang.addLanguage')}
           </Text>
           <Pressable style={styles.headerSideBtn} onPress={onClose} hitSlop={8}>
             <CloseIcon />
@@ -78,7 +80,7 @@ export function LanguageSheet({
 
         {mode === 'switch' && (
           <>
-            <Text style={styles.subtitle}>Tap one to switch.</Text>
+            <Text style={styles.subtitle}>{t('lang.tapToSwitch')}</Text>
             <ScrollView
               contentContainerStyle={styles.listInner}
               showsVerticalScrollIndicator={false}
@@ -95,7 +97,7 @@ export function LanguageSheet({
                 />
               ))}
               <Pressable style={styles.addCta} onPress={() => setMode('add')}>
-                <Text style={styles.addCtaText}>+ Add a language</Text>
+                <Text style={styles.addCtaText}>+ {t('lang.addLanguage')}</Text>
               </Pressable>
             </ScrollView>
           </>
@@ -103,13 +105,13 @@ export function LanguageSheet({
 
         {mode === 'add' && (
           <>
-            <Text style={styles.subtitle}>Pick another to start learning.</Text>
+            <Text style={styles.subtitle}>{t('lang.pickAnother')}</Text>
             <ScrollView
               contentContainerStyle={styles.listInner}
               showsVerticalScrollIndicator={false}
             >
               {addable.length === 0 && (
-                <Text style={styles.empty}>You've enrolled in everything we've got.</Text>
+                <Text style={styles.empty}>{t('lang.fullCatalog')}</Text>
               )}
               {addable.map((c) => (
                 <AddableRow
@@ -140,6 +142,7 @@ function CourseRow({
   onPress: () => void;
 }) {
   const { getLanguage } = useContent();
+  const t = useT();
   const target = getLanguage(course.target);
   const source = getLanguage(course.source);
   return (
@@ -150,7 +153,7 @@ function CourseRow({
       <Text style={styles.flag}>{target.flag}</Text>
       <View style={{ flex: 1 }}>
         <Text style={styles.rowTitle}>{target.name}</Text>
-        <Text style={styles.rowSub}>From {source.name}</Text>
+        <Text style={styles.rowSub}>{t('lang.fromSource', { source: source.name })}</Text>
       </View>
       {active && (
         <View style={styles.activeBadge}>
@@ -163,6 +166,7 @@ function CourseRow({
 
 function AddableRow({ course, onPress }: { course: Course; onPress: () => void }) {
   const { getLanguage } = useContent();
+  const t = useT();
   const target = getLanguage(course.target);
   const source = getLanguage(course.source);
   const disabled = !course.available;
@@ -176,10 +180,10 @@ function AddableRow({ course, onPress }: { course: Course; onPress: () => void }
       <View style={{ flex: 1 }}>
         <Text style={[styles.rowTitle, disabled && { color: colors.muted }]}>{target.name}</Text>
         <Text style={styles.rowSub}>
-          {disabled ? 'Coming soon' : `From ${source.name}`}
+          {disabled ? t('lang.comingSoon') : t('lang.fromSource', { source: source.name })}
         </Text>
       </View>
-      {!disabled && <Text style={styles.addHint}>+ Add</Text>}
+      {!disabled && <Text style={styles.addHint}>{t('common.add')}</Text>}
     </Pressable>
   );
 }

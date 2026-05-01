@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { CloseIcon } from '@/components/Icons';
+import { useT } from '@/i18n';
 
 type Props = {
   onClose: () => void;
@@ -12,6 +13,7 @@ const COOLDOWN_SECONDS = 25 * 60;
 
 export function BreatherScreen({ onClose }: Props) {
   const [secondsLeft, setSecondsLeft] = useState(COOLDOWN_SECONDS);
+  const t = useT();
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -37,37 +39,33 @@ export function BreatherScreen({ onClose }: Props) {
           <View style={styles.circle} />
         </View>
 
-        <Text style={styles.title}>Take a breather.</Text>
+        <Text style={styles.title}>{t('breather.title')}</Text>
 
-        <Text style={styles.message}>
-          That was a tricky one. Brains learn better with{' '}
-          <Text style={styles.messageEm}>short rests</Text> — research backs this up. Come back in a
-          bit and try again.
-        </Text>
+        <Text style={styles.message}>{t('breather.message')}</Text>
 
         <View style={styles.countdown}>
           <View style={styles.timerBlock}>
             <Text style={styles.timer}>
               {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
             </Text>
-            <Text style={styles.timerLabel}>Until this lesson reopens</Text>
+            <Text style={styles.timerLabel}>{t('breather.untilReopens')}</Text>
           </View>
         </View>
 
         <View style={styles.meanwhile}>
-          <Text style={styles.meanwhileHead}>In the meantime</Text>
+          <Text style={styles.meanwhileHead}>{t('breather.meanwhile')}</Text>
           <Pressable style={styles.meanwhileItem} onPress={onClose}>
             <View style={[styles.meanwhileIcon, { backgroundColor: colors.mossSoft }]} />
             <View style={styles.meanwhileText}>
-              <Text style={styles.meanwhileT1}>Review words you know</Text>
-              <Text style={styles.meanwhileT2}>A gentle warm-up · 2 min</Text>
+              <Text style={styles.meanwhileT1}>{t('breather.review.title')}</Text>
+              <Text style={styles.meanwhileT2}>{t('breather.review.meta')}</Text>
             </View>
           </Pressable>
           <Pressable style={styles.meanwhileItem} onPress={onClose}>
             <View style={[styles.meanwhileIcon, { backgroundColor: colors.lilacSoft }]} />
             <View style={styles.meanwhileText}>
-              <Text style={styles.meanwhileT1}>Listen to a story</Text>
-              <Text style={styles.meanwhileT2}>Always free for you · 4 min</Text>
+              <Text style={styles.meanwhileT1}>{t('breather.story.title')}</Text>
+              <Text style={styles.meanwhileT2}>{t('breather.story.meta')}</Text>
             </View>
           </Pressable>
         </View>

@@ -5,6 +5,7 @@ import { fonts } from '@/theme/typography';
 import { Mascot } from '@/components/Mascot';
 import { PlayIcon } from '@/components/PlayIcon';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useT } from '@/i18n';
 import type { LocalizedText, MultipleChoiceExercise } from '@/data/types';
 import {
   ActionsRow,
@@ -24,6 +25,7 @@ export function MultipleChoice({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('idle');
   const { speak, speaking } = useSpeech();
+  const t = useT();
 
   const options = useMemo<Option[]>(() => {
     const correct: Option = { id: 'c', text: exercise.correct, correct: true };
@@ -68,8 +70,8 @@ export function MultipleChoice({
   return (
     <View style={styles.body}>
       <View style={styles.prompt}>
-        <Text style={styles.kicker}>Pick the right one</Text>
-        <Text style={styles.title}>How do you say…</Text>
+        <Text style={styles.kicker}>{t('lesson.choice.kicker')}</Text>
+        <Text style={styles.title}>{t('lesson.choice.title')}</Text>
       </View>
 
       <View style={styles.speakerCard}>
@@ -122,7 +124,6 @@ export function MultipleChoice({
       <ActionsRow
         status={status}
         primaryEnabled={!!selectedId}
-        primaryLabel="Check"
         onCheck={check}
         onSkip={skip}
         onContinue={proceed}

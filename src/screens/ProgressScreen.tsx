@@ -6,6 +6,7 @@ import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
 import { getStats } from '@/api/client';
 import type { Stats } from '@/api/types';
 import { useContent } from '@/state/ContentProvider';
+import { useT } from '@/i18n';
 
 const WEEK = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -32,6 +33,7 @@ type Props = {
 
 export function ProgressScreen({ dailyMinutes }: Props) {
   const { getLanguage } = useContent();
+  const t = useT();
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
@@ -65,8 +67,8 @@ export function ProgressScreen({ dailyMinutes }: Props) {
   return (
     <View style={styles.root}>
       <View style={styles.top}>
-        <Text style={styles.title}>Progress</Text>
-        <Text style={styles.sub}>Quietly cheering you on.</Text>
+        <Text style={styles.title}>{t('progress.title')}</Text>
+        <Text style={styles.sub}>{t('progress.subtitle')}</Text>
       </View>
 
       <ScrollView
@@ -78,29 +80,29 @@ export function ProgressScreen({ dailyMinutes }: Props) {
           <Stat
             icon={<TargetIcon size={18} color={colors.primary} />}
             value={wordsKnown.toLocaleString()}
-            label="words known"
+            label={t('progress.stat.wordsKnown')}
             tint={colors.primarySoft}
           />
           <Stat
             icon={<ClockIcon size={18} color={colors.moss} />}
             value={`${minutesThisWeek}`}
-            label="min this week"
+            label={t('progress.stat.minutesThisWeek')}
             tint={colors.mossSoft}
           />
           <Stat
             icon={<LeafIcon size={18} color={colors.lilac} />}
             value={`${dailyMinutes}`}
-            label="goal a day"
+            label={t('progress.stat.goalADay')}
             tint={colors.lilacSoft}
           />
         </View>
 
         <View style={styles.card}>
           <View style={styles.cardHead}>
-            <Text style={styles.cardKicker}>This week's rhythm</Text>
+            <Text style={styles.cardKicker}>{t('progress.thisWeek')}</Text>
             <View style={styles.pill}>
               <LeafIcon size={12} color={colors.moss} />
-              <Text style={styles.pillText}>{daysActive} of 7</Text>
+              <Text style={styles.pillText}>{t('progress.daysOfSeven', { count: daysActive })}</Text>
             </View>
           </View>
           <View style={styles.weekGrid}>
@@ -131,19 +133,17 @@ export function ProgressScreen({ dailyMinutes }: Props) {
           </View>
           <Text style={styles.cardBody}>
             {daysActive >= 4
-              ? 'Lovely steady pace. Missed days don\'t undo what you\'ve learned.'
+              ? t('progress.encouragement.steady')
               : daysActive > 0
-              ? 'Quietly building. No streak to chase, just words tucked away.'
-              : 'A fresh week. Whenever you come back, pip will be here.'}
+              ? t('progress.encouragement.building')
+              : t('progress.encouragement.fresh')}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Recently completed</Text>
+          <Text style={styles.sectionLabel}>{t('progress.recentLabel')}</Text>
           {recentLessons.length === 0 && (
-            <Text style={styles.empty}>
-              Finish a lesson and it'll show up here. No rush.
-            </Text>
+            <Text style={styles.empty}>{t('progress.recentEmpty')}</Text>
           )}
           {recentLessons.map((r) => {
             const target = getLanguage(r.courseId.split(':')[1]);
@@ -164,11 +164,8 @@ export function ProgressScreen({ dailyMinutes }: Props) {
         </View>
 
         <View style={styles.encouragement}>
-          <Text style={styles.encouragementTitle}>No streaks, no pressure.</Text>
-          <Text style={styles.encouragementBody}>
-            Pip tracks what you know, not what you missed. Whenever you come back, you pick up where
-            you left off.
-          </Text>
+          <Text style={styles.encouragementTitle}>{t('progress.noStreaks.title')}</Text>
+          <Text style={styles.encouragementBody}>{t('progress.noStreaks.body')}</Text>
         </View>
       </ScrollView>
     </View>

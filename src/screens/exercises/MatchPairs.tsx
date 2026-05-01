@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useT } from '@/i18n';
 import type { MatchPairsExercise } from '@/data/types';
 import {
   ActionsRow,
@@ -30,6 +31,7 @@ export function MatchPairs({
   const [wrongTaps, setWrongTaps] = useState(0);
   const [status, setStatus] = useState<Status>('idle');
   const { speak } = useSpeech();
+  const t = useT();
 
   const sources = useMemo<Card[]>(
     () =>
@@ -146,8 +148,8 @@ export function MatchPairs({
   return (
     <View style={styles.body}>
       <View style={styles.prompt}>
-        <Text style={styles.kicker}>Match the pairs</Text>
-        <Text style={styles.title}>Tap a word, then its match.</Text>
+        <Text style={styles.kicker}>{t('lesson.match.kicker')}</Text>
+        <Text style={styles.title}>{t('lesson.match.title')}</Text>
       </View>
 
       <View style={styles.grid}>

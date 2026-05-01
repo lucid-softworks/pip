@@ -21,6 +21,7 @@ import type { RemoteProgress } from '@/api/types';
 import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
 import { PlayIcon } from '@/components/PlayIcon';
 import { LanguageSheet } from '@/components/LanguageSheet';
+import { useT } from '@/i18n';
 
 type Props = {
   activeCourseId: CourseId;
@@ -72,6 +73,7 @@ export function HomeScreen({
   onEnrollCourse,
 }: Props) {
   const { loadUnitsForCourse, getLanguage } = useContent();
+  const t = useT();
   const [units, setUnits] = useState<Unit[] | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -106,13 +108,13 @@ export function HomeScreen({
           </Pressable>
           <View style={styles.habitPill}>
             <LeafIcon size={14} color={colors.moss} />
-            <Text style={styles.habitPillText}>240 words</Text>
+            <Text style={styles.habitPillText}>{t('home.wordsKnown', { count: 240 })}</Text>
           </View>
         </View>
 
         <View style={styles.greetRow}>
-          <Text style={styles.greetHi}>Welcome back,</Text>
-          <Text style={styles.greetWho}>{userName}.</Text>
+          <Text style={styles.greetHi}>{t('home.welcomeBack')}</Text>
+          <Text style={styles.greetWho}>{t('home.greetWho', { name: userName })}</Text>
         </View>
 
         <View style={styles.encourage}>
@@ -143,8 +145,8 @@ export function HomeScreen({
             })}
           </View>
           <View style={styles.encourageText}>
-            <Text style={styles.encourageStrong}>4 of last 5 days</Text>
-            <Text style={styles.encourageSub}>Lovely rhythm. No pressure to keep it perfect.</Text>
+            <Text style={styles.encourageStrong}>{t('home.fourOfFive')}</Text>
+            <Text style={styles.encourageSub}>{t('home.lovelyRhythm')}</Text>
           </View>
         </View>
 
@@ -155,7 +157,7 @@ export function HomeScreen({
         >
           <View style={styles.chapterHead}>
             <Text style={styles.chapterLabel}>
-              {`Unit 01 · ${unit.level} · ${unit.name}`}
+              {t('home.unitLabel', { level: unit.level, name: unit.name })}
             </Text>
           </View>
 
@@ -169,9 +171,7 @@ export function HomeScreen({
               <View style={styles.cardRow1}>
                 <View style={styles.liveDot} />
                 <Text style={styles.cardKicker}>
-                  {currentLesson.segments?.done
-                    ? 'Pick up where you left off'
-                    : 'Up next'}
+                  {currentLesson.segments?.done ? t('home.pickUp') : t('home.upNext')}
                 </Text>
               </View>
               <Text style={styles.cardTitle}>{currentLesson.title}</Text>
@@ -188,13 +188,11 @@ export function HomeScreen({
                 <View style={styles.metaRow}>
                   <View style={styles.metaItem}>
                     <ClockIcon size={12} color={colors.paper} />
-                    <Text style={styles.metaText}>3 min</Text>
+                    <Text style={styles.metaText}>{t('home.minutes', { count: 3 })}</Text>
                   </View>
                   <View style={styles.metaItem}>
                     <TargetIcon size={12} color={colors.paper} />
-                    <Text style={styles.metaText}>
-                      {currentLesson.meta ?? 'A new lesson'}
-                    </Text>
+                    <Text style={styles.metaText}>{currentLesson.meta ?? ''}</Text>
                   </View>
                 </View>
                 <Pressable
@@ -202,7 +200,7 @@ export function HomeScreen({
                   onPress={() => onOpenLesson(currentLesson.id)}
                 >
                   <Text style={styles.playCtaText}>
-                    {currentLesson.segments?.done ? 'Resume' : 'Start'}
+                    {currentLesson.segments?.done ? t('common.resume') : t('common.start')}
                   </Text>
                   <PlayIcon size={11} color={colors.white} />
                 </Pressable>
@@ -212,11 +210,8 @@ export function HomeScreen({
 
           {allLessonsDone && (
             <View style={styles.allDoneCard}>
-              <Text style={styles.allDoneTitle}>You did the whole unit. ✨</Text>
-              <Text style={styles.allDoneBody}>
-                Take a beat. The next unit will be here soon — and your finished lessons will
-                always be here to revisit.
-              </Text>
+              <Text style={styles.allDoneTitle}>{t('home.allDoneTitle')}</Text>
+              <Text style={styles.allDoneBody}>{t('home.allDoneBody')}</Text>
             </View>
           )}
 

@@ -16,6 +16,7 @@ import Svg, { Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
+import { useT } from '@/i18n';
 
 type Props = {
   userName: string;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
+  const t = useT();
   const [reduceMotion, setReduceMotion] = useState(false);
   const [slowSpeech, setSlowSpeech] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
@@ -50,8 +52,8 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
   return (
     <View style={styles.root}>
       <View style={styles.top}>
-        <Text style={styles.title}>You</Text>
-        <Text style={styles.sub}>Settings, your way.</Text>
+        <Text style={styles.title}>{t('you.title')}</Text>
+        <Text style={styles.sub}>{t('you.subtitle')}</Text>
       </View>
 
       <ScrollView
@@ -65,21 +67,19 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.profileName}>{userName}</Text>
-            <Text style={styles.profileMeta}>Tap to edit · free, the whole way</Text>
+            <Text style={styles.profileMeta}>{t('you.profile.tagline')}</Text>
           </View>
           <ChevronRight />
         </Pressable>
 
-        <Text style={styles.helperHint}>
-          Tap the language chip on Home to switch courses or add a new language.
-        </Text>
+        <Text style={styles.helperHint}>{t('you.languageHint')}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Settings</Text>
+          <Text style={styles.sectionLabel}>{t('you.section.settings')}</Text>
           <View style={styles.settingRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle}>Slower speech</Text>
-              <Text style={styles.settingHelper}>Read prompts a little more slowly</Text>
+              <Text style={styles.settingTitle}>{t('you.setting.slowSpeech.title')}</Text>
+              <Text style={styles.settingHelper}>{t('you.setting.slowSpeech.help')}</Text>
             </View>
             <Switch
               value={slowSpeech}
@@ -90,8 +90,8 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
           </View>
           <View style={styles.settingRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle}>Reduce motion</Text>
-              <Text style={styles.settingHelper}>Calmer transitions</Text>
+              <Text style={styles.settingTitle}>{t('you.setting.reduceMotion.title')}</Text>
+              <Text style={styles.settingHelper}>{t('you.setting.reduceMotion.help')}</Text>
             </View>
             <Switch
               value={reduceMotion}
@@ -102,8 +102,8 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
           </View>
           <View style={styles.settingRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle}>Haptic feedback</Text>
-              <Text style={styles.settingHelper}>Gentle taps on correct answers</Text>
+              <Text style={styles.settingTitle}>{t('you.setting.haptic.title')}</Text>
+              <Text style={styles.settingHelper}>{t('you.setting.haptic.help')}</Text>
             </View>
             <Switch
               value={hapticFeedback}
@@ -115,13 +115,10 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>About</Text>
+          <Text style={styles.sectionLabel}>{t('you.section.about')}</Text>
           <View style={styles.aboutCard}>
-            <Text style={styles.aboutTitle}>Pip is free, the whole way.</Text>
-            <Text style={styles.aboutBody}>
-              Stories are the only paid part. No streaks, no leagues, no shame. We're rooting for
-              you.
-            </Text>
+            <Text style={styles.aboutTitle}>{t('you.about.title')}</Text>
+            <Text style={styles.aboutBody}>{t('you.about.body')}</Text>
           </View>
         </View>
 
@@ -129,16 +126,16 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
           style={styles.signOutRow}
           onPress={() => {
             Alert.alert(
-              'Sign out?',
-              'Your progress is saved on the server. You can sign back in any time.',
+              t('you.signOut.confirmTitle'),
+              t('you.signOut.confirmBody'),
               [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Sign out', style: 'destructive', onPress: () => onSignOut() },
+                { text: t('common.cancel'), style: 'cancel' },
+                { text: t('you.signOut'), style: 'destructive', onPress: () => onSignOut() },
               ],
             );
           }}
         >
-          <Text style={styles.signOutText}>Sign out</Text>
+          <Text style={styles.signOutText}>{t('you.signOut')}</Text>
         </Pressable>
 
         <Text style={styles.version}>v0.1.0 · prerelease</Text>
@@ -161,9 +158,9 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
                 onPress={() => setEditingName(false)}
                 hitSlop={8}
               >
-                <Text style={styles.sheetHeaderCancel}>Cancel</Text>
+                <Text style={styles.sheetHeaderCancel}>{t('common.cancel')}</Text>
               </Pressable>
-              <Text style={styles.sheetHeaderTitle}>Your name</Text>
+              <Text style={styles.sheetHeaderTitle}>{t('you.editName.title')}</Text>
               <Pressable
                 style={styles.sheetHeaderSideBtn}
                 onPress={saveName}
@@ -176,15 +173,13 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
                     !draftName.trim() && { color: colors.muted },
                   ]}
                 >
-                  Save
+                  {t('common.save')}
                 </Text>
               </Pressable>
             </View>
             <View style={styles.sheetBody}>
-              <Text style={styles.sheetTitle}>What should we call you?</Text>
-              <Text style={styles.sheetSubtitle}>
-                Whatever you'd like — lowercase is fine, we won't fix it.
-              </Text>
+              <Text style={styles.sheetTitle}>{t('you.editName.heading')}</Text>
+              <Text style={styles.sheetSubtitle}>{t('you.editName.subtitle')}</Text>
               <TextInput
                 value={draftName}
                 onChangeText={setDraftName}
@@ -193,7 +188,7 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
                 autoCapitalize="none"
                 autoCorrect={false}
                 maxLength={24}
-                placeholder="Friend"
+                placeholder={t('onboarding.name.placeholder')}
                 placeholderTextColor={colors.muted}
                 returnKeyType="done"
                 onSubmitEditing={saveName}

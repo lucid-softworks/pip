@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
+import { useT } from '@/i18n';
 
 export type Status = 'idle' | 'correct' | 'wrong';
 
@@ -20,22 +21,25 @@ type FeedbackProps = {
 export function Feedback({
   status,
   correctText,
-  correctTitle = 'Lovely.',
-  wrongTitle = 'Almost.',
+  correctTitle,
+  wrongTitle,
 }: FeedbackProps) {
+  const t = useT();
   if (status === 'idle') return null;
+  const right = correctTitle ?? t('common.lovely');
+  const wrong = wrongTitle ?? t('common.almost');
   return (
     <View style={feedbackStyles.feedback}>
       {status === 'correct' ? (
         <>
-          <Text style={[feedbackStyles.title, { color: colors.moss }]}>{correctTitle}</Text>
+          <Text style={[feedbackStyles.title, { color: colors.moss }]}>{right}</Text>
           <Text style={feedbackStyles.body}>{correctText}</Text>
         </>
       ) : (
         <>
-          <Text style={[feedbackStyles.title, { color: colors.berry }]}>{wrongTitle}</Text>
+          <Text style={[feedbackStyles.title, { color: colors.berry }]}>{wrong}</Text>
           <Text style={feedbackStyles.body}>
-            The answer is:{' '}
+            {t('lesson.feedback.theAnswerIs')}{' '}
             <Text style={{ fontFamily: fonts.bodyHeavy }}>{correctText}</Text>
           </Text>
         </>
@@ -77,43 +81,45 @@ type ActionsRowProps = {
 export function ActionsRow({
   status,
   primaryEnabled = true,
-  primaryLabel = 'Check',
+  primaryLabel,
   onCheck,
   onSkip,
   onContinue,
   onTryAgain,
 }: ActionsRowProps) {
+  const t = useT();
+  const checkLabel = primaryLabel ?? t('common.check');
   return (
     <View style={actionStyles.actions}>
       {status === 'idle' && (
         <>
           <Pressable style={actionStyles.ghostBtn} onPress={onSkip}>
-            <Text style={actionStyles.ghostBtnText}>Skip</Text>
+            <Text style={actionStyles.ghostBtnText}>{t('common.skip')}</Text>
           </Pressable>
           <Pressable
             style={[actionStyles.primaryBtn, !primaryEnabled && actionStyles.primaryBtnDisabled]}
             onPress={onCheck}
             disabled={!primaryEnabled}
           >
-            <Text style={actionStyles.primaryBtnText}>{primaryLabel}</Text>
+            <Text style={actionStyles.primaryBtnText}>{checkLabel}</Text>
           </Pressable>
         </>
       )}
       {status === 'correct' && (
         <Pressable style={[actionStyles.primaryBtn, { flex: 1 }]} onPress={onContinue}>
-          <Text style={actionStyles.primaryBtnText}>Continue</Text>
+          <Text style={actionStyles.primaryBtnText}>{t('common.continue')}</Text>
         </Pressable>
       )}
       {status === 'wrong' && (
         <>
           <Pressable style={actionStyles.ghostBtn} onPress={onContinue}>
-            <Text style={actionStyles.ghostBtnText}>Move on</Text>
+            <Text style={actionStyles.ghostBtnText}>{t('common.moveOn')}</Text>
           </Pressable>
           <Pressable
             style={[actionStyles.primaryBtn, actionStyles.primaryBtnCoral]}
             onPress={onTryAgain}
           >
-            <Text style={actionStyles.primaryBtnText}>Try again</Text>
+            <Text style={actionStyles.primaryBtnText}>{t('common.tryAgain')}</Text>
           </Pressable>
         </>
       )}

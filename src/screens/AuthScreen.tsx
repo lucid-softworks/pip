@@ -15,6 +15,7 @@ import { fonts } from '@/theme/typography';
 import { ApiError, NetworkError, signIn, signUp } from '@/api/client';
 import type { AuthSuccess } from '@/api/types';
 import { Mascot } from '@/components/Mascot';
+import { useT } from '@/i18n';
 
 type Mode = 'sign-in' | 'sign-up';
 
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function AuthScreen({ onAuthed }: Props) {
+  const t = useT();
   const [mode, setMode] = useState<Mode>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,11 +40,11 @@ export function AuthScreen({ onAuthed }: Props) {
     setError(null);
 
     if (!email.trim() || !password) {
-      setError('Email and password are needed.');
+      setError(t('auth.error.missing'));
       return;
     }
     if (mode === 'sign-up' && password.length < 8) {
-      setError('Password should be at least 8 characters.');
+      setError(t('auth.error.shortPassword'));
       return;
     }
 
@@ -63,7 +65,7 @@ export function AuthScreen({ onAuthed }: Props) {
       } else if (e instanceof ApiError) {
         setError(e.friendly);
       } else {
-        setError('Something went wrong. Try again?');
+        setError(t('auth.error.generic'));
       }
     } finally {
       setLoading(false);
@@ -86,10 +88,8 @@ export function AuthScreen({ onAuthed }: Props) {
           <Mascot size={88} />
         </View>
 
-        <Text style={styles.title}>Welcome.</Text>
-        <Text style={styles.subtitle}>
-          Pip syncs across devices. Sign in to pick up where you left off.
-        </Text>
+        <Text style={styles.title}>{t('auth.welcome')}</Text>
+        <Text style={styles.subtitle}>{t('auth.subtitle')}</Text>
 
         <View style={styles.tabs}>
           <Pressable
@@ -100,7 +100,7 @@ export function AuthScreen({ onAuthed }: Props) {
             }}
           >
             <Text style={[styles.tabText, mode === 'sign-in' && styles.tabTextActive]}>
-              Sign in
+              {t('auth.tab.signIn')}
             </Text>
           </Pressable>
           <Pressable
@@ -111,20 +111,20 @@ export function AuthScreen({ onAuthed }: Props) {
             }}
           >
             <Text style={[styles.tabText, mode === 'sign-up' && styles.tabTextActive]}>
-              Create account
+              {t('auth.tab.signUp')}
             </Text>
           </Pressable>
         </View>
 
         {mode === 'sign-up' && (
           <Field
-            label="Name"
+            label={t('auth.field.name')}
             value={name}
             onChangeText={setName}
             autoCapitalize="none"
             autoCorrect={false}
             textContentType="name"
-            placeholder="What should we call you?"
+            placeholder={t('auth.placeholder.name')}
             returnKeyType="next"
             onSubmitEditing={() => emailRef.current?.focus()}
           />
@@ -132,28 +132,28 @@ export function AuthScreen({ onAuthed }: Props) {
 
         <Field
           ref={emailRef}
-          label="Email"
+          label={t('auth.field.email')}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="email-address"
           textContentType="emailAddress"
-          placeholder="you@somewhere.com"
+          placeholder={t('auth.placeholder.email')}
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
         <Field
           ref={passwordRef}
-          label="Password"
+          label={t('auth.field.password')}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           autoCapitalize="none"
           autoCorrect={false}
           textContentType={mode === 'sign-up' ? 'newPassword' : 'password'}
-          placeholder={mode === 'sign-up' ? 'At least 8 characters' : ''}
+          placeholder={mode === 'sign-up' ? t('auth.placeholder.passwordSignUp') : ''}
           onSubmitEditing={submit}
           returnKeyType="go"
         />
@@ -173,14 +173,13 @@ export function AuthScreen({ onAuthed }: Props) {
             <ActivityIndicator color={colors.white} />
           ) : (
             <Text style={styles.ctaText}>
-              {mode === 'sign-up' ? 'Create account' : 'Sign in'}
+              {mode === 'sign-up' ? t('auth.cta.signUp') : t('auth.cta.signIn')}
             </Text>
           )}
         </Pressable>
 
         <Text style={styles.fineprint}>
-          By {mode === 'sign-up' ? 'creating an account' : 'signing in'} you accept that this is a
-          prerelease and your data may be reset.
+          {mode === 'sign-up' ? t('auth.fineprint.signUp') : t('auth.fineprint.signIn')}
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>

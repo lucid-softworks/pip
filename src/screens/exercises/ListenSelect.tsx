@@ -4,6 +4,7 @@ import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { PlayIcon } from '@/components/PlayIcon';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useT } from '@/i18n';
 import type { ListenSelectExercise, LocalizedText } from '@/data/types';
 import {
   ActionsRow,
@@ -24,6 +25,7 @@ export function ListenSelect({
   const [status, setStatus] = useState<Status>('idle');
   const { speak, speaking } = useSpeech();
   const playedOnce = useRef(false);
+  const t = useT();
 
   const options = useMemo<Option[]>(() => {
     const correct: Option = { id: 'c', text: exercise.correct, correct: true };
@@ -79,15 +81,15 @@ export function ListenSelect({
   return (
     <View style={styles.body}>
       <View style={styles.prompt}>
-        <Text style={styles.kicker}>Listen up</Text>
-        <Text style={styles.title}>What did you hear?</Text>
+        <Text style={styles.kicker}>{t('lesson.listen.kicker')}</Text>
+        <Text style={styles.title}>{t('lesson.listen.title')}</Text>
       </View>
 
       <Pressable style={styles.audioCard} onPress={replay}>
         <View style={styles.audioPlay}>
           <PlayIcon size={28} color={colors.white} playing={speaking} />
         </View>
-        <Text style={styles.audioHint}>Tap to replay</Text>
+        <Text style={styles.audioHint}>{t('lesson.listen.replay')}</Text>
       </Pressable>
 
       <View style={styles.options}>
@@ -129,7 +131,6 @@ export function ListenSelect({
       <ActionsRow
         status={status}
         primaryEnabled={!!selectedId}
-        primaryLabel="Check"
         onCheck={check}
         onSkip={skip}
         onContinue={proceed}

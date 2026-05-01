@@ -5,6 +5,7 @@ import { fonts } from '@/theme/typography';
 import { Mascot } from '@/components/Mascot';
 import { PlayIcon } from '@/components/PlayIcon';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useT } from '@/i18n';
 import type { TranslateTapExercise } from '@/data/types';
 import {
   ActionsRow,
@@ -26,6 +27,7 @@ export function TranslateTap({
   const [usedIds, setUsedIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<Status>('idle');
   const { speak, speaking } = useSpeech();
+  const t = useT();
 
   const bank = useMemo<Tile[]>(() => {
     const all = [...exercise.answerTokens, ...exercise.distractors];
@@ -78,8 +80,8 @@ export function TranslateTap({
   return (
     <View style={styles.body}>
       <View style={styles.prompt}>
-        <Text style={styles.kicker}>Translate the sentence</Text>
-        <Text style={styles.title}>Tap the words to build the sentence</Text>
+        <Text style={styles.kicker}>{t('lesson.translate.kicker')}</Text>
+        <Text style={styles.title}>{t('lesson.translate.title')}</Text>
       </View>
 
       <View style={styles.speakerCard}>
@@ -104,7 +106,7 @@ export function TranslateTap({
         ]}
       >
         {placed.length === 0 && status === 'idle' && (
-          <Text style={styles.placeholder}>Tap words below…</Text>
+          <Text style={styles.placeholder}>{t('lesson.translate.placeholder')}</Text>
         )}
         {placed.map((t) => (
           <Pressable key={t.id} onPress={() => removeTile(t.id)}>
@@ -139,7 +141,6 @@ export function TranslateTap({
       <ActionsRow
         status={status}
         primaryEnabled={placed.length > 0}
-        primaryLabel="Check"
         onCheck={check}
         onSkip={skip}
         onContinue={proceed}

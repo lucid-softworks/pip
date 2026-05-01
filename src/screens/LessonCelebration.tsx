@@ -6,6 +6,7 @@ import { CheckIcon, ClockIcon, TargetIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
 import { useSpeech } from '@/hooks/useSpeech';
 import type { Lesson, LocalizedText } from '@/data/types';
+import { useT, type TranslationKey } from '@/i18n';
 
 type Props = {
   lesson: Lesson;
@@ -15,13 +16,15 @@ type Props = {
   onContinue: () => void;
 };
 
-// Soft "lovely" copy — varies a little so it doesn't get rote. Tone-matched to "kind by design".
-const CHEERS = [
-  { kicker: 'Lovely.', body: "That's another one in the bag." },
-  { kicker: 'Beautifully done.', body: 'New words tucked away — they stick best when you come back to them.' },
-  { kicker: 'Look at you.', body: 'A few more minutes spent, a few more words you know.' },
-  { kicker: 'Quietly excellent.', body: 'No rush, no streak — just steady, real progress.' },
-  { kicker: 'There it is.', body: 'These small wins are what stack up over time.' },
+// Soft "lovely" copy — varies a little so it doesn't get rote. Tone-matched
+// to "kind by design". Each entry has a stable key so its translation lookup
+// stays the same regardless of locale.
+const CHEERS: { kickerKey: TranslationKey; bodyKey: TranslationKey }[] = [
+  { kickerKey: 'celebration.cheer.lovely.kicker', bodyKey: 'celebration.cheer.lovely.body' },
+  { kickerKey: 'celebration.cheer.beautifully.kicker', bodyKey: 'celebration.cheer.beautifully.body' },
+  { kickerKey: 'celebration.cheer.lookAtYou.kicker', bodyKey: 'celebration.cheer.lookAtYou.body' },
+  { kickerKey: 'celebration.cheer.quietly.kicker', bodyKey: 'celebration.cheer.quietly.body' },
+  { kickerKey: 'celebration.cheer.thereItIs.kicker', bodyKey: 'celebration.cheer.thereItIs.body' },
 ];
 
 function pickCheer(seed: string) {
@@ -53,14 +56,6 @@ function pickTargetSnippet(lesson: Lesson): LocalizedText | null {
   return null;
 }
 
-function formatTime(seconds: number) {
-  if (seconds < 60) return `${seconds} sec`;
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  if (s === 0) return `${m} min`;
-  return `${m}m ${s}s`;
-}
-
 export function LessonCelebration({
   lesson,
   correctCount,
@@ -70,6 +65,15 @@ export function LessonCelebration({
 }: Props) {
   const cheer = pickCheer(lesson.id);
   const { speak } = useSpeech();
+  const t = useT();
+
+  const formatTime = (seconds: number): string => {
+    if (seconds < 60) return t('celebration.time.seconds', { seconds });
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    if (s === 0) return t('celebration.time.minutes', { minutes: m });
+    return t('celebration.time.minutesSeconds', { minutes: m, seconds: s });
+  };
 
   const scale = useRef(new Animated.Value(0.8)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -102,10 +106,10 @@ export function LessonCelebration({
     // a target-language voice.
     const targetSnippet = pickTargetSnippet(lesson);
     if (targetSnippet) {
-      const t = setTimeout(() => {
+      const timer = setTimeout(() => {
         speak(targetSnippet.text, { language: targetSnippet.language, rate: 0.85 });
       }, 500);
-      return () => clearTimeout(t);
+      return () => clearTimeout(timer);
     }
   }, [lesson, scale, opacity, lift, speak]);
 
@@ -124,9 +128,11 @@ export function LessonCelebration({
         </Animated.View>
 
         <Animated.View style={{ opacity, transform: [{ translateY: lift }] }}>
-          <Text style={styles.kicker}>{cheer.kicker}</Text>
-          <Text style={styles.title}>You finished {lesson.title}.</Text>
-          <Text style={styles.body_text}>{cheer.body}</Text>
+          <Text style={styles.kicker}>{t(cheer.kickerKey)}</Text>
+          <Text style={styles.title}>
+            {t('celebration.youFinished', { title: lesson.title })}
+          </Text>
+          <Text style={styles.body_text}>{t(cheer.bodyKey)}</Text>
         </Animated.View>
 
         <Animated.View style={[styles.stats, { opacity, transform: [{ translateY: lift }] }]}>
@@ -135,27 +141,27 @@ export function LessonCelebration({
             iconColor={colors.moss}
             icon={<CheckIcon size={16} color={colors.moss} />}
             value={`${correctCount}/${totalCount}`}
-            label="exercises"
+            label={t('celebration.stat.exercises')}
           />
           <Stat
             tint={colors.primarySoft}
             iconColor={colors.primary}
             icon={<TargetIcon size={16} color={colors.primary} />}
             value={`${lesson.newWordCount}`}
-            label="new words"
+            label={t('celebration.stat.newWords')}
           />
           <Stat
             tint={colors.skySoft}
             iconColor={colors.sky}
             icon={<ClockIcon size={16} color={colors.sky} />}
             value={formatTime(elapsedSeconds)}
-            label="time"
+            label={t('celebration.stat.time')}
           />
         </Animated.View>
       </View>
 
       <Pressable style={styles.cta} onPress={onContinue}>
-        <Text style={styles.ctaText}>Continue</Text>
+        <Text style={styles.ctaText}>{t('celebration.cta')}</Text>
       </Pressable>
     </View>
   );

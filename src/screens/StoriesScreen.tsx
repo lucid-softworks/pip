@@ -12,6 +12,7 @@ import { fonts } from '@/theme/typography';
 import { useContent } from '@/state/ContentProvider';
 import type { LanguageTag, Story } from '@/data/types';
 import { CheckIcon, ClockIcon } from '@/components/Icons';
+import { useT } from '@/i18n';
 
 type Props = {
   targetLanguage: LanguageTag;
@@ -27,6 +28,7 @@ const THUMB_COLOR_MAP: Record<Story['thumbColor'], { bg: string; fg: string }> =
 
 export function StoriesScreen({ targetLanguage }: Props) {
   const { loadStoriesForLanguage, getLanguage } = useContent();
+  const t = useT();
   const [stories, setStories] = useState<Story[] | null>(null);
   const lang = getLanguage(targetLanguage);
 
@@ -38,7 +40,7 @@ export function StoriesScreen({ targetLanguage }: Props) {
   return (
     <View style={styles.root}>
       <View style={styles.top}>
-        <Text style={styles.title}>Stories</Text>
+        <Text style={styles.title}>{t('stories.title')}</Text>
         <View style={styles.bookmarkBtn}>
           <BookmarkIcon />
         </View>
@@ -50,11 +52,13 @@ export function StoriesScreen({ targetLanguage }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.intro}>
-          <Text style={styles.introSmall}>Pip Stories · {lang.flag} {lang.name}</Text>
-          <Text style={styles.introTitle}>Audio tales for picking up real {lang.name}.</Text>
-          <Text style={styles.introBody}>
-            Short, beautifully voiced stories at your level — to listen, read along, or both.
+          <Text style={styles.introSmall}>
+            {t('stories.intro.kicker', { flag: lang.flag, language: lang.name })}
           </Text>
+          <Text style={styles.introTitle}>
+            {t('stories.intro.title', { language: lang.name })}
+          </Text>
+          <Text style={styles.introBody}>{t('stories.intro.body')}</Text>
         </View>
 
         <View style={styles.freeStrip}>
@@ -62,8 +66,8 @@ export function StoriesScreen({ targetLanguage }: Props) {
             <CheckIcon size={14} color={colors.moss} />
           </View>
           <Text style={styles.freeStripText}>
-            <Text style={styles.freeStripStrong}>Two stories per week always free.</Text>{' '}
-            No subscription needed.
+            <Text style={styles.freeStripStrong}>{t('stories.freeStrip.strong')}</Text>{' '}
+            {t('stories.freeStrip.body')}
           </Text>
         </View>
 
@@ -79,6 +83,7 @@ export function StoriesScreen({ targetLanguage }: Props) {
 }
 
 function StoryCard({ story, locked }: { story: Story; locked: boolean }) {
+  const t = useT();
   const palette = THUMB_COLOR_MAP[story.thumbColor];
   return (
     <Pressable style={[styles.card, locked && styles.cardLocked]}>
@@ -93,7 +98,7 @@ function StoryCard({ story, locked }: { story: Story; locked: boolean }) {
       </View>
       <View style={styles.cardInfo}>
         <View style={styles.topRow}>
-          <Text style={styles.level}>{`${story.level} · ${levelLabel(story.level)}`}</Text>
+          <Text style={styles.level}>{`${story.level} · ${levelLabel(story.level, t)}`}</Text>
         </View>
         <Text style={styles.cardTitle}>{story.title}</Text>
         <Text style={styles.cardDesc} numberOfLines={2}>
@@ -102,16 +107,16 @@ function StoryCard({ story, locked }: { story: Story; locked: boolean }) {
         <View style={styles.bottomRow}>
           <View style={styles.metaItem}>
             <ClockIcon size={12} color={colors.muted} />
-            <Text style={styles.metaText}>{story.minutes} min</Text>
+            <Text style={styles.metaText}>{t('stories.duration', { count: story.minutes })}</Text>
           </View>
           {story.freeThisWeek && (
             <Text style={[styles.metaText, { color: colors.moss, fontFamily: fonts.bodyHeavy }]}>
-              FREE THIS WEEK
+              {t('stories.freeThisWeek')}
             </Text>
           )}
           {locked && (
             <Text style={[styles.metaText, { color: colors.lilac, fontFamily: fonts.bodyHeavy }]}>
-              PIP+
+              {t('stories.pip+')}
             </Text>
           )}
         </View>
@@ -120,16 +125,19 @@ function StoryCard({ story, locked }: { story: Story; locked: boolean }) {
   );
 }
 
-function levelLabel(level: Story['level']): string {
+function levelLabel(
+  level: Story['level'],
+  t: (key: 'stories.level.beginner' | 'stories.level.intermediate' | 'stories.level.advanced') => string,
+): string {
   switch (level) {
     case 'A1':
     case 'A2':
-      return 'Beginner';
+      return t('stories.level.beginner');
     case 'B1':
     case 'B2':
-      return 'Intermediate';
+      return t('stories.level.intermediate');
     case 'C1':
-      return 'Advanced';
+      return t('stories.level.advanced');
   }
 }
 

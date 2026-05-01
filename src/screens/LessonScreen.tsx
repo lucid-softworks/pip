@@ -4,6 +4,7 @@ import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { CloseIcon, LeafIcon } from '@/components/Icons';
 import { useContent } from '@/state/ContentProvider';
+import { useT } from '@/i18n';
 import type { Exercise, Lesson } from '@/data/types';
 import { updateProgress } from '@/api/client';
 import { TranslateTap } from './exercises/TranslateTap';
@@ -26,6 +27,7 @@ type Phase =
 
 export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: Props) {
   const { loadLesson } = useContent();
+  const t = useT();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [phase, setPhase] = useState<Phase>({ kind: 'loading' });
   const [wrongStreak, setWrongStreak] = useState(0);
@@ -109,7 +111,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
         </View>
         <View style={styles.pacePill}>
           <LeafIcon size={12} color={colors.muted} />
-          <Text style={styles.pacePillText}>No rush</Text>
+          <Text style={styles.pacePillText}>{t('common.noRush')}</Text>
         </View>
       </View>
 

@@ -2,6 +2,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
+import { useT } from '@/i18n';
+import type { TranslationKey } from '@/i18n';
 
 export type TabKey = 'learn' | 'stories' | 'progress' | 'you';
 
@@ -10,24 +12,27 @@ type Props = {
   onChange: (tab: TabKey) => void;
 };
 
-const TABS: { key: TabKey; label: string; Icon: (p: IconProps) => React.ReactElement }[] = [
-  { key: 'learn', label: 'Learn', Icon: HomeIcon },
-  { key: 'stories', label: 'Stories', Icon: StoriesIcon },
-  { key: 'progress', label: 'Progress', Icon: ProgressIcon },
-  { key: 'you', label: 'You', Icon: UserIcon },
+const TABS: { key: TabKey; labelKey: TranslationKey; Icon: (p: IconProps) => React.ReactElement }[] = [
+  { key: 'learn', labelKey: 'tab.learn', Icon: HomeIcon },
+  { key: 'stories', labelKey: 'tab.stories', Icon: StoriesIcon },
+  { key: 'progress', labelKey: 'tab.progress', Icon: ProgressIcon },
+  { key: 'you', labelKey: 'tab.you', Icon: UserIcon },
 ];
 
 export function TabBar({ active, onChange }: Props) {
+  const t = useT();
   return (
     <View style={styles.tabbar}>
-      {TABS.map((t) => {
-        const isActive = t.key === active;
+      {TABS.map((tab) => {
+        const isActive = tab.key === active;
         const tint = isActive ? colors.primary : colors.muted;
         return (
-          <Pressable key={t.key} style={styles.tab} onPress={() => onChange(t.key)}>
+          <Pressable key={tab.key} style={styles.tab} onPress={() => onChange(tab.key)}>
             {isActive && <View style={styles.tabActiveBar} />}
-            <t.Icon color={tint} />
-            <Text style={[styles.tabLabel, isActive && { color: colors.primary }]}>{t.label}</Text>
+            <tab.Icon color={tint} />
+            <Text style={[styles.tabLabel, isActive && { color: colors.primary }]}>
+              {t(tab.labelKey)}
+            </Text>
           </Pressable>
         );
       })}
