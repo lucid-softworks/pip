@@ -146,59 +146,60 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
 
       <Modal
         visible={editingName}
-        transparent
         animationType="slide"
+        presentationStyle="pageSheet"
         onRequestClose={() => setEditingName(false)}
-        statusBarTranslucent
       >
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.modalRoot}>
-            <Pressable style={styles.modalBackdrop} onPress={() => setEditingName(false)} />
-            <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-              <View style={styles.sheet}>
-                <View style={styles.sheetHandle} />
-                <Text style={styles.sheetTitle}>What should we call you?</Text>
-                <Text style={styles.sheetSubtitle}>
-                  Whatever you'd like — lowercase is fine, we won't fix it.
+          <SafeAreaView style={styles.sheetRoot} edges={['bottom']}>
+            <View style={styles.sheetHeader}>
+              <Pressable
+                style={styles.sheetHeaderSideBtn}
+                onPress={() => setEditingName(false)}
+                hitSlop={8}
+              >
+                <Text style={styles.sheetHeaderCancel}>Cancel</Text>
+              </Pressable>
+              <Text style={styles.sheetHeaderTitle}>Your name</Text>
+              <Pressable
+                style={styles.sheetHeaderSideBtn}
+                onPress={saveName}
+                disabled={!draftName.trim()}
+                hitSlop={8}
+              >
+                <Text
+                  style={[
+                    styles.sheetHeaderSave,
+                    !draftName.trim() && { color: colors.muted },
+                  ]}
+                >
+                  Save
                 </Text>
-                <TextInput
-                  value={draftName}
-                  onChangeText={setDraftName}
-                  style={styles.sheetInput}
-                  autoFocus
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  maxLength={24}
-                  placeholder="Friend"
-                  placeholderTextColor={colors.muted}
-                  returnKeyType="done"
-                  onSubmitEditing={saveName}
-                />
-                <View style={styles.sheetActions}>
-                  <Pressable
-                    style={[styles.sheetBtn, styles.sheetBtnGhost]}
-                    onPress={() => setEditingName(false)}
-                  >
-                    <Text style={styles.sheetBtnGhostText}>Cancel</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[
-                      styles.sheetBtn,
-                      styles.sheetBtnPrimary,
-                      !draftName.trim() && styles.sheetBtnDisabled,
-                    ]}
-                    onPress={saveName}
-                    disabled={!draftName.trim()}
-                  >
-                    <Text style={styles.sheetBtnPrimaryText}>Save</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </SafeAreaView>
-          </View>
+              </Pressable>
+            </View>
+            <View style={styles.sheetBody}>
+              <Text style={styles.sheetTitle}>What should we call you?</Text>
+              <Text style={styles.sheetSubtitle}>
+                Whatever you'd like — lowercase is fine, we won't fix it.
+              </Text>
+              <TextInput
+                value={draftName}
+                onChangeText={setDraftName}
+                style={styles.sheetInput}
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
+                maxLength={24}
+                placeholder="Friend"
+                placeholderTextColor={colors.muted}
+                returnKeyType="done"
+                onSubmitEditing={saveName}
+              />
+            </View>
+          </SafeAreaView>
         </KeyboardAvoidingView>
       </Modal>
     </View>
@@ -354,36 +355,46 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
-  // Edit-name modal
-  modalRoot: { flex: 1 },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(42, 36, 24, 0.45)',
+  // Edit-name modal — native pageSheet with iOS-style header bar.
+  sheetRoot: { flex: 1, backgroundColor: colors.paper },
+  sheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.line,
   },
-  sheetWrap: {
-    backgroundColor: colors.paper,
+  sheetHeaderSideBtn: {
+    minWidth: 60,
   },
-  sheet: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-    backgroundColor: colors.paper,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+  sheetHeaderTitle: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 16,
+    color: colors.ink,
+    letterSpacing: -0.2,
   },
-  sheetHandle: {
-    alignSelf: 'center',
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.line,
-    marginBottom: 14,
+  sheetHeaderCancel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: colors.ink2,
+  },
+  sheetHeaderSave: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 15,
+    color: colors.primary,
+    textAlign: 'right',
+  },
+  sheetBody: {
+    paddingHorizontal: 22,
+    paddingTop: 24,
   },
   sheetTitle: {
     fontFamily: fonts.display,
-    fontSize: 22,
+    fontSize: 24,
     color: colors.ink,
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
     marginBottom: 6,
   },
   sheetSubtitle: {
@@ -391,7 +402,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.muted,
     lineHeight: 18,
-    marginBottom: 16,
+    marginBottom: 18,
   },
   sheetInput: {
     height: 56,
@@ -404,41 +415,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: colors.ink,
     letterSpacing: -0.5,
-    marginBottom: 14,
-  },
-  sheetActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  sheetBtn: {
-    flex: 1,
-    height: 50,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sheetBtnGhost: {
-    borderWidth: 1.5,
-    borderColor: colors.line,
-  },
-  sheetBtnGhostText: {
-    fontFamily: fonts.bodyHeavy,
-    fontSize: 13,
-    color: colors.muted,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-  },
-  sheetBtnPrimary: {
-    backgroundColor: colors.primary,
-  },
-  sheetBtnDisabled: {
-    backgroundColor: colors.line,
-  },
-  sheetBtnPrimaryText: {
-    fontFamily: fonts.bodyHeavy,
-    fontSize: 13,
-    color: colors.white,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
   },
 });
