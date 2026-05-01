@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Android adaptive icon foreground. The system clips this to whatever
+  shape the launcher uses, so the mark stays inside the safe ~66% inner
+  area. The bg color comes from app.json's adaptiveIcon.backgroundColor.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <g transform="translate(512 512) rotate(-3) translate(-220 -220)">
+    <rect x="0" y="0" width="440" height="440" rx="140" fill="#FF7043"/>
+    <text
+      x="220"
+      y="332"
+      text-anchor="middle"
+      font-family="Helvetica, Arial, sans-serif"
+      font-size="320"
+      font-weight="700"
+      fill="#FFFFFF"
+      letter-spacing="-10">P</text>
+  </g>
+  <circle cx="668" cy="356" r="32" fill="#F4C13C"/>
+</svg>

@@ -7,6 +7,7 @@
     "scheme": "pip",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "me.wvvw.pip"
@@ -14,17 +15,28 @@
     "android": {
       "package": "me.wvvw.pip",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F6EFE0"
       },
       "usesCleartextTraffic": true
     },
     "splash": {
+      "image": "./assets/splash-icon.png",
       "backgroundColor": "#F6EFE0",
       "resizeMode": "contain"
     },
     "plugins": [
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "backgroundColor": "#F6EFE0",
+          "imageWidth": 220,
+          "resizeMode": "contain"
+        }
+      ]
     ],
     "extra": {
       "eas": {

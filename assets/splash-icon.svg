@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <g transform="translate(512 512) rotate(-3) translate(-256 -256)">
+    <rect x="0" y="0" width="512" height="512" rx="160" fill="#FF7043"/>
+    <text
+      x="256"
+      y="384"
+      text-anchor="middle"
+      font-family="Helvetica, Arial, sans-serif"
+      font-size="380"
+      font-weight="700"
+      fill="#FFFFFF"
+      letter-spacing="-12">P</text>
+  </g>
+  <circle cx="700" cy="320" r="36" fill="#F4C13C"/>
+</svg>
