@@ -132,7 +132,7 @@ export function MatchPairs({
           style={[
             styles.cardText,
             isMatched && styles.cardTextMatched,
-            isPicked && { color: colors.primary },
+            isPicked && { color: colors.sky },
             isWrong && { color: colors.berry },
           ]}
           numberOfLines={2}
@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardPicked: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primarySoft,
+    borderColor: colors.sky,
+    backgroundColor: colors.skySoft,
   },
   cardMatched: {
     borderColor: colors.mossSoft,

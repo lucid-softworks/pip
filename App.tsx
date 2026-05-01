@@ -28,6 +28,7 @@ import { TabBar, type TabKey } from '@/components/TabBar';
 import { colors } from '@/theme/colors';
 import { type CourseId, makeCourseId, parseCourseId } from '@/data/types';
 import { ContentProvider } from '@/state/ContentProvider';
+import { I18nProvider } from '@/i18n';
 import {
   addEnrollment,
   getMe,
@@ -287,8 +288,9 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <ContentProvider>
-        <StatusBar style="dark" />
+      <I18nProvider>
+        <ContentProvider>
+          <StatusBar style="dark" />
         <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
           {authPhase === 'unauth' ? (
             <AuthScreen onAuthed={handleAuthed} />
@@ -340,8 +342,9 @@ export default function App() {
               )}
             </>
           )}
-        </SafeAreaView>
-      </ContentProvider>
+          </SafeAreaView>
+        </ContentProvider>
+      </I18nProvider>
     </SafeAreaProvider>
   );
 }

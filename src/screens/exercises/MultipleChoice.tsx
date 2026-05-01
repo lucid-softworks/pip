@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   optionSelected: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primarySoft,
+    borderColor: colors.sky,
+    backgroundColor: colors.skySoft,
   },
   optionRight: {
     borderColor: colors.moss,
