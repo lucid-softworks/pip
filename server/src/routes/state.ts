@@ -1,8 +1,10 @@
 import { Elysia, t } from 'elysia';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNotNull } from 'drizzle-orm';
 import { auth } from '../auth.ts';
 import { db } from '../db/index.ts';
 import { enrollment, lessonProgress, userProfile } from '../db/schema.ts';
+import { CURRICULA_BY_ID } from '../content/curricula/index.ts';
+import { type Lesson, makeCourseId } from '../content/types.ts';
 
 type SessionUser = {
   id: string;
@@ -13,6 +15,16 @@ type SessionUser = {
 async function getUser(request: Request): Promise<SessionUser | null> {
   const result = await auth.api.getSession({ headers: request.headers });
   return result?.user ?? null;
+}
+
+// Index every lesson by id once at boot. Used for stats lookups so we can
+// translate a completed lessonId into newWordCount / estimatedMinutes / title.
+const LESSONS_BY_ID = new Map<string, Lesson & { courseId: string }>();
+for (const c of Object.values(CURRICULA_BY_ID)) {
+  const courseId = makeCourseId(c.source, c.target);
+  for (const [id, l] of Object.entries(c.lessons)) {
+    LESSONS_BY_ID.set(id, { ...l, courseId });
+  }
 }
 
 async function getStateFor(userId: string) {
@@ -64,6 +76,58 @@ export const stateRoutes = new Elysia({ prefix: '/api/me' })
       return { error: 'unauthorized' };
     }
     return await getStateFor(user.id);
+  })
+  .get('/stats', async ({ request, set }) => {
+    const user = await getUser(request);
+    if (!user) {
+      set.status = 401;
+      return { error: 'unauthorized' };
+    }
+
+    const completed = await db
+      .select()
+      .from(lessonProgress)
+      .where(
+        and(eq(lessonProgress.userId, user.id), isNotNull(lessonProgress.completedAt)),
+      );
+
+    const weekAgoMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    let wordsKnown = 0;
+    let minutesThisWeek = 0;
+    const daysThisWeek = new Set<string>();
+    type RecentRow = {
+      lessonId: string;
+      title: string;
+      courseId: string;
+      completedAt: string;
+    };
+    const recent: RecentRow[] = [];
+
+    for (const p of completed) {
+      const lesson = LESSONS_BY_ID.get(p.lessonId);
+      if (!lesson || !p.completedAt) continue;
+      wordsKnown += lesson.newWordCount;
+      const completedAt = p.completedAt;
+      if (completedAt.getTime() > weekAgoMs) {
+        minutesThisWeek += lesson.estimatedMinutes;
+        daysThisWeek.add(completedAt.toISOString().slice(0, 10));
+      }
+      recent.push({
+        lessonId: p.lessonId,
+        title: lesson.title,
+        courseId: lesson.courseId,
+        completedAt: completedAt.toISOString(),
+      });
+    }
+
+    recent.sort((a, b) => b.completedAt.localeCompare(a.completedAt));
+
+    return {
+      wordsKnown,
+      minutesThisWeek,
+      daysActiveThisWeek: daysThisWeek.size,
+      recentLessons: recent.slice(0, 5),
+    };
   })
   .put(
     '/profile',

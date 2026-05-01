@@ -9,6 +9,7 @@ import type {
   RemoteEnrollment,
   RemoteProfile,
   RemoteState,
+  Stats,
 } from './types';
 
 export class ApiError extends Error {
@@ -151,4 +152,13 @@ export async function updateProgress(update: ProgressUpdate): Promise<void> {
     method: 'PUT',
     body: JSON.stringify(update),
   });
+}
+
+export async function getStats(): Promise<Stats | null> {
+  try {
+    return await request<Stats>('/api/me/stats');
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 401) return null;
+    throw e;
+  }
 }

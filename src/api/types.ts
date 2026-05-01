@@ -77,3 +77,17 @@ export type ProgressUpdate = {
   totalExercises: number;
   completed?: boolean;
 };
+
+export type RecentLesson = {
+  lessonId: string;
+  title: string;
+  courseId: string;
+  completedAt: string;
+};
+
+export type Stats = {
+  wordsKnown: number;
+  minutesThisWeek: number;
+  daysActiveThisWeek: number;
+  recentLessons: RecentLesson[];
+};

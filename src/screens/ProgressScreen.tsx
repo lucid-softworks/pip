@@ -1,23 +1,67 @@
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
+import { getStats } from '@/api/client';
+import type { Stats } from '@/api/types';
+import { useContent } from '@/state/ContentProvider';
 
 const WEEK = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-const TODAY_INDEX = 4;
-const DONE_DAYS = new Set([0, 1, 2, 3]);
 
-const RECENT = [
-  { id: 'r-01', title: 'Greetings', meta: '12 words · 3 min' },
-  { id: 'r-02', title: 'Numbers 1–20', meta: '20 words · 4 min' },
-  { id: 'r-03', title: 'Polite phrases', meta: '8 words · 3 min' },
-];
+// Returns Mon-Sun indices (0..6) for the dates in `daysActive` (ISO YYYY-MM-DD).
+function activeWeekdayIndices(isoDates: string[]): Set<number> {
+  const result = new Set<number>();
+  for (const iso of isoDates) {
+    const d = new Date(iso + 'T12:00:00Z');
+    // JS getUTCDay: Sun=0..Sat=6. We want Mon=0..Sun=6.
+    const idx = (d.getUTCDay() + 6) % 7;
+    result.add(idx);
+  }
+  return result;
+}
+
+function todayWeekdayIndex(): number {
+  const d = new Date();
+  return (d.getDay() + 6) % 7;
+}
 
 type Props = {
   dailyMinutes: number;
 };
 
 export function ProgressScreen({ dailyMinutes }: Props) {
+  const { getLanguage } = useContent();
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getStats()
+      .then((s) => {
+        if (!cancelled && s) setStats(s);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const wordsKnown = stats?.wordsKnown ?? 0;
+  const minutesThisWeek = stats?.minutesThisWeek ?? 0;
+  const daysActive = stats?.daysActiveThisWeek ?? 0;
+  const recentLessons = stats?.recentLessons ?? [];
+
+  const activeIdx = activeWeekdayIndices(
+    recentLessons
+      .map((r) => r.completedAt.slice(0, 10))
+      .filter((d) => {
+        // only this week's days for the rhythm strip
+        const t = new Date(d + 'T12:00:00Z').getTime();
+        return t > Date.now() - 7 * 24 * 60 * 60 * 1000;
+      }),
+  );
+  const todayIdx = todayWeekdayIndex();
+
   return (
     <View style={styles.root}>
       <View style={styles.top}>
@@ -31,8 +75,24 @@ export function ProgressScreen({ dailyMinutes }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.statRow}>
-          <Stat icon={<TargetIcon size={18} color={colors.primary} />} value="240" label="words known" tint={colors.primarySoft} />
-          <Stat icon={<ClockIcon size={18} color={colors.moss} />} value={`${dailyMinutes} min`} label="goal a day" tint={colors.mossSoft} />
+          <Stat
+            icon={<TargetIcon size={18} color={colors.primary} />}
+            value={wordsKnown.toLocaleString()}
+            label="words known"
+            tint={colors.primarySoft}
+          />
+          <Stat
+            icon={<ClockIcon size={18} color={colors.moss} />}
+            value={`${minutesThisWeek}`}
+            label="min this week"
+            tint={colors.mossSoft}
+          />
+          <Stat
+            icon={<LeafIcon size={18} color={colors.lilac} />}
+            value={`${dailyMinutes}`}
+            label="goal a day"
+            tint={colors.lilacSoft}
+          />
         </View>
 
         <View style={styles.card}>
@@ -40,13 +100,13 @@ export function ProgressScreen({ dailyMinutes }: Props) {
             <Text style={styles.cardKicker}>This week's rhythm</Text>
             <View style={styles.pill}>
               <LeafIcon size={12} color={colors.moss} />
-              <Text style={styles.pillText}>4 of 7</Text>
+              <Text style={styles.pillText}>{daysActive} of 7</Text>
             </View>
           </View>
           <View style={styles.weekGrid}>
             {WEEK.map((d, i) => {
-              const isDone = DONE_DAYS.has(i);
-              const isToday = i === TODAY_INDEX;
+              const isDone = activeIdx.has(i);
+              const isToday = i === todayIdx;
               return (
                 <View
                   key={i}
@@ -70,23 +130,37 @@ export function ProgressScreen({ dailyMinutes }: Props) {
             })}
           </View>
           <Text style={styles.cardBody}>
-            Lovely steady pace. Missed days don't undo what you've learned.
+            {daysActive >= 4
+              ? 'Lovely steady pace. Missed days don\'t undo what you\'ve learned.'
+              : daysActive > 0
+              ? 'Quietly building. No streak to chase, just words tucked away.'
+              : 'A fresh week. Whenever you come back, pip will be here.'}
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>Recently completed</Text>
-          {RECENT.map((r) => (
-            <View key={r.id} style={styles.row}>
-              <View style={styles.rowMarker}>
-                <CheckIcon size={16} color={colors.white} />
+          {recentLessons.length === 0 && (
+            <Text style={styles.empty}>
+              Finish a lesson and it'll show up here. No rush.
+            </Text>
+          )}
+          {recentLessons.map((r) => {
+            const target = getLanguage(r.courseId.split(':')[1]);
+            return (
+              <View key={r.lessonId} style={styles.row}>
+                <View style={styles.rowMarker}>
+                  <CheckIcon size={16} color={colors.white} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.rowTitle}>{r.title}</Text>
+                  <Text style={styles.rowMeta}>
+                    {target.flag} {target.name}
+                  </Text>
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.rowTitle}>{r.title}</Text>
-                <Text style={styles.rowMeta}>{r.meta}</Text>
-              </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         <View style={styles.encouragement}>
@@ -271,6 +345,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.muted,
     marginTop: 2,
+  },
+  empty: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.muted,
+    fontStyle: 'italic',
+    paddingHorizontal: 4,
+    paddingVertical: 8,
   },
 
   encouragement: {
