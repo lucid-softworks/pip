@@ -23,9 +23,18 @@ import { StoriesScreen } from '@/screens/StoriesScreen';
 import { ProgressScreen } from '@/screens/ProgressScreen';
 import { YouScreen } from '@/screens/YouScreen';
 import { OnboardingScreen, type OnboardingResult } from '@/screens/OnboardingScreen';
+import { AuthScreen } from '@/screens/AuthScreen';
 import { TabBar, type TabKey } from '@/components/TabBar';
 import { colors } from '@/theme/colors';
 import { type CourseId, makeCourseId, parseCourseId } from '@/data/courses';
+import { getMe, signOut } from '@/api/client';
+import {
+  clearPrefs,
+  getPrefs,
+  getToken,
+  setPrefs,
+} from '@/api/storage';
+import type { AuthSuccess } from '@/api/types';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -34,11 +43,16 @@ type Overlay =
   | { kind: 'lesson'; lessonId: string }
   | { kind: 'breather'; returnLessonId: string };
 
+type AuthPhase = 'loading' | 'unauth' | 'authed';
+
 const DEFAULT_COURSE: CourseId = makeCourseId('en-US', 'fr-FR');
 const DEFAULT_NAME = 'Friend';
 const DEFAULT_MINUTES = 10;
 
 export default function App() {
+  const [authPhase, setAuthPhase] = useState<AuthPhase>('loading');
+  const [accountName, setAccountName] = useState<string | null>(null);
+
   const [onboarded, setOnboarded] = useState(false);
   const [userName, setUserName] = useState(DEFAULT_NAME);
   const [dailyMinutes, setDailyMinutes] = useState(DEFAULT_MINUTES);
@@ -49,15 +63,89 @@ export default function App() {
     () => new Set([DEFAULT_COURSE]),
   );
 
-  const handleOnboardingFinish = useCallback((result: OnboardingResult) => {
+  // ---------- Boot: load token + prefs, validate session ----------
+
+  useEffect(() => {
+    (async () => {
+      const [token, prefs] = await Promise.all([getToken(), getPrefs()]);
+      if (prefs.userName) setUserName(prefs.userName);
+      if (prefs.dailyMinutes !== null) setDailyMinutes(prefs.dailyMinutes);
+      if (prefs.activeCourseId) {
+        setActiveCourseId(prefs.activeCourseId);
+        setEnrolledCourses(new Set([prefs.activeCourseId]));
+      }
+      setOnboarded(prefs.onboarded);
+
+      if (!token) {
+        setAuthPhase('unauth');
+        return;
+      }
+
+      try {
+        const me = await getMe();
+        if (!me) {
+          setAuthPhase('unauth');
+          return;
+        }
+        setAccountName(me.user.name);
+        setAuthPhase('authed');
+      } catch {
+        // Network failure on boot — keep them on auth screen so they can retry.
+        setAuthPhase('unauth');
+      }
+    })();
+  }, []);
+
+  // ---------- Auth callbacks ----------
+
+  const handleAuthed = useCallback(
+    async (result: AuthSuccess, mode: 'sign-in' | 'sign-up') => {
+      setAccountName(result.user.name);
+
+      if (mode === 'sign-up') {
+        // Brand new account → run onboarding next; default the name field to the account name.
+        await setPrefs({ onboarded: false, userName: result.user.name });
+        setUserName(result.user.name);
+        setOnboarded(false);
+      }
+
+      setAuthPhase('authed');
+    },
+    [],
+  );
+
+  const handleSignOut = useCallback(async () => {
+    await signOut();
+    await clearPrefs();
+    setOnboarded(false);
+    setUserName(DEFAULT_NAME);
+    setDailyMinutes(DEFAULT_MINUTES);
+    setActiveCourseId(DEFAULT_COURSE);
+    setEnrolledCourses(new Set([DEFAULT_COURSE]));
+    setTab('learn');
+    setAccountName(null);
+    setAuthPhase('unauth');
+  }, []);
+
+  // ---------- Onboarding callback ----------
+
+  const handleOnboardingFinish = useCallback(async (result: OnboardingResult) => {
     setUserName(result.userName);
     setDailyMinutes(result.dailyMinutes);
     setActiveCourseId(result.courseId);
     setEnrolledCourses(new Set([result.courseId]));
     setOnboarded(true);
+    await setPrefs({
+      onboarded: true,
+      userName: result.userName,
+      dailyMinutes: result.dailyMinutes,
+      activeCourseId: result.courseId,
+    });
   }, []);
 
-  const enrollCourse = useCallback((id: CourseId) => {
+  // ---------- Course callbacks (persist) ----------
+
+  const enrollCourse = useCallback(async (id: CourseId) => {
     setEnrolledCourses((set) => {
       if (set.has(id)) return set;
       const next = new Set(set);
@@ -65,30 +153,17 @@ export default function App() {
       return next;
     });
     setActiveCourseId(id);
+    await setPrefs({ activeCourseId: id });
   }, []);
 
-  const switchCourse = useCallback((id: CourseId) => {
+  const switchCourse = useCallback(async (id: CourseId) => {
     setActiveCourseId(id);
+    await setPrefs({ activeCourseId: id });
   }, []);
 
   const activeTarget = parseCourseId(activeCourseId).target;
 
-  const [nunitoLoaded] = useNunito({
-    Nunito_500Medium,
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    Nunito_800ExtraBold,
-  });
-  const [bricolageLoaded] = useBricolage({
-    BricolageGrotesque_600SemiBold,
-    BricolageGrotesque_700Bold,
-  });
-
-  const ready = nunitoLoaded && bricolageLoaded;
-
-  useEffect(() => {
-    if (ready) SplashScreen.hideAsync().catch(() => {});
-  }, [ready]);
+  // ---------- Lesson overlay callbacks ----------
 
   const openLesson = useCallback((lessonId: string) => {
     setOverlay({ kind: 'lesson', lessonId });
@@ -104,14 +179,50 @@ export default function App() {
     );
   }, []);
 
+  // ---------- Fonts ----------
+
+  const [nunitoLoaded] = useNunito({
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
+  });
+  const [bricolageLoaded] = useBricolage({
+    BricolageGrotesque_600SemiBold,
+    BricolageGrotesque_700Bold,
+  });
+
+  const fontsReady = nunitoLoaded && bricolageLoaded;
+  const ready = fontsReady && authPhase !== 'loading';
+
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync().catch(() => {});
+  }, [ready]);
+
+  // ---------- Render ----------
+
   if (!ready) return <View style={styles.shell} />;
+
+  if (authPhase === 'unauth') {
+    return (
+      <SafeAreaProvider>
+        <StatusBar style="dark" />
+        <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
+          <AuthScreen onAuthed={handleAuthed} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   if (!onboarded) {
     return (
       <SafeAreaProvider>
         <StatusBar style="dark" />
         <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
-          <OnboardingScreen onFinish={handleOnboardingFinish} />
+          <OnboardingScreen
+            onFinish={handleOnboardingFinish}
+            initialName={accountName ?? userName}
+          />
         </SafeAreaView>
       </SafeAreaProvider>
     );
@@ -134,7 +245,9 @@ export default function App() {
           )}
           {tab === 'stories' && <StoriesScreen targetLanguage={activeTarget} />}
           {tab === 'progress' && <ProgressScreen dailyMinutes={dailyMinutes} />}
-          {tab === 'you' && <YouScreen userName={userName} />}
+          {tab === 'you' && (
+            <YouScreen userName={userName} onSignOut={handleSignOut} />
+          )}
         </View>
         <TabBar active={tab} onChange={setTab} />
 

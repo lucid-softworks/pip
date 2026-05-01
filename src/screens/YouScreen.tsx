@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
 
 type Props = {
   userName: string;
+  onSignOut: () => void | Promise<void>;
 };
 
-export function YouScreen({ userName }: Props) {
+export function YouScreen({ userName, onSignOut }: Props) {
   const [reduceMotion, setReduceMotion] = useState(false);
   const [slowSpeech, setSlowSpeech] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
@@ -90,6 +99,22 @@ export function YouScreen({ userName }: Props) {
             </Text>
           </View>
         </View>
+
+        <Pressable
+          style={styles.signOutRow}
+          onPress={() => {
+            Alert.alert(
+              'Sign out?',
+              'Your progress is saved on the server. You can sign back in any time.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Sign out', style: 'destructive', onPress: () => onSignOut() },
+              ],
+            );
+          }}
+        >
+          <Text style={styles.signOutText}>Sign out</Text>
+        </Pressable>
 
         <Text style={styles.version}>v0.1.0 · prerelease</Text>
       </ScrollView>
@@ -188,6 +213,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.muted,
     marginTop: 2,
+  },
+
+  signOutRow: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.line,
+    backgroundColor: colors.paper,
+  },
+  signOutText: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 13,
+    color: colors.berry,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
 
   aboutCard: {

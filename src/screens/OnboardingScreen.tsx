@@ -30,6 +30,7 @@ export type OnboardingResult = {
 
 type Props = {
   onFinish: (result: OnboardingResult) => void;
+  initialName?: string;
 };
 
 const TOTAL_STEPS = 5;
@@ -37,10 +38,10 @@ const DEFAULT_NAME = 'Friend';
 const DEFAULT_COURSE: CourseId = makeCourseId('en-US', 'fr-FR');
 const DEFAULT_MINUTES = 10;
 
-export function OnboardingScreen({ onFinish }: Props) {
+export function OnboardingScreen({ onFinish, initialName }: Props) {
   const [step, setStep] = useState(0);
   const [courseId, setCourseId] = useState<CourseId | null>(null);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState(initialName ?? '');
   const [minutes, setMinutes] = useState<number | null>(null);
 
   const next = () => setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1));
@@ -240,7 +241,7 @@ function NameStep({
           placeholder="Friend"
           placeholderTextColor={colors.muted}
           style={styles.input}
-          autoCapitalize="words"
+          autoCapitalize="none"
           autoCorrect={false}
           maxLength={24}
           autoFocus

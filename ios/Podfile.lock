@@ -218,6 +218,8 @@ PODS:
     - React-Core
     - React-runtimescheduler
     - ReactCommon
+  - ExpoSecureStore (55.0.13):
+    - ExpoModulesCore
   - ExpoSpeech (55.0.13):
     - ExpoModulesCore
   - ExpoSplashScreen (55.0.19):
@@ -2139,6 +2141,7 @@ DEPENDENCIES:
   - "ExpoLogBox (from `../node_modules/.pnpm/@expo+log-box@55.0.11_@expo+dom-webview@55.0.5_expo@55.0.19_react-native@0.83.6_@babel+_7a91ee8c59f953e6721899ac5ce80373/node_modules/@expo/log-box`)"
   - "ExpoModulesCore (from `../node_modules/.pnpm/expo-modules-core@55.0.24_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.14_react@19.2.0__react@19.2.0/node_modules/expo-modules-core`)"
   - "ExpoModulesJSI (from `../node_modules/.pnpm/expo-modules-core@55.0.24_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.14_react@19.2.0__react@19.2.0/node_modules/expo-modules-core`)"
+  - "ExpoSecureStore (from `../node_modules/.pnpm/expo-secure-store@55.0.13_expo@55.0.19/node_modules/expo-secure-store/ios`)"
   - "ExpoSpeech (from `../node_modules/.pnpm/expo-speech@55.0.13_expo@55.0.19/node_modules/expo-speech/ios`)"
   - "ExpoSplashScreen (from `../node_modules/.pnpm/expo-splash-screen@55.0.19_expo@55.0.19_typescript@5.9.3/node_modules/expo-splash-screen/ios`)"
   - "EXUpdatesInterface (from `../node_modules/.pnpm/expo-updates-interface@55.1.6_expo@55.0.19/node_modules/expo-updates-interface/ios`)"
@@ -2252,6 +2255,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/.pnpm/expo-modules-core@55.0.24_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.14_react@19.2.0__react@19.2.0/node_modules/expo-modules-core"
   ExpoModulesJSI:
     :path: "../node_modules/.pnpm/expo-modules-core@55.0.24_react-native@0.83.6_@babel+core@7.29.0_@types+react@19.2.14_react@19.2.0__react@19.2.0/node_modules/expo-modules-core"
+  ExpoSecureStore:
+    :path: "../node_modules/.pnpm/expo-secure-store@55.0.13_expo@55.0.19/node_modules/expo-secure-store/ios"
   ExpoSpeech:
     :path: "../node_modules/.pnpm/expo-speech@55.0.13_expo@55.0.19/node_modules/expo-speech/ios"
   ExpoSplashScreen:
@@ -2427,6 +2432,7 @@ SPEC CHECKSUMS:
   ExpoLogBox: 617da77cbc083627692b2ea050a3666808aef2cd
   ExpoModulesCore: 0e5079ef327756a902e966a894b9d8982719766c
   ExpoModulesJSI: 9b60671a31c30bc8e24b25632e7cb475a84b9016
+  ExpoSecureStore: 38954f6bcef1287aa04c06fba3b86e8af3291ccd
   ExpoSpeech: 7f5d4a94aea1fbc509cf4ab2649bc2e3f05ea15e
   ExpoSplashScreen: 43517d54a0f90d381c80deda859aa6087e80884b
   EXUpdatesInterface: 4c11f4d1594526258f14d09817dc407acbf24e3b
