@@ -26,6 +26,12 @@
       "expo-font",
       "expo-splash-screen",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a112181c-f9d7-4ad1-92d4-f77ce4200b24"
+      }
+    },
+    "owner": "lucid-softworks"
   }
 }

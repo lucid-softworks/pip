@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
@@ -10,6 +10,7 @@ import { TranslateTap } from './exercises/TranslateTap';
 import { MultipleChoice } from './exercises/MultipleChoice';
 import { ListenSelect } from './exercises/ListenSelect';
 import { MatchPairs } from './exercises/MatchPairs';
+import { LessonCelebration } from './LessonCelebration';
 
 type Props = {
   lessonId: string;
@@ -18,24 +19,33 @@ type Props = {
   onComplete: () => void;
 };
 
+type Phase =
+  | { kind: 'loading' }
+  | { kind: 'exercising'; index: number }
+  | { kind: 'celebrating' };
+
 export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: Props) {
   const { loadLesson } = useContent();
   const [lesson, setLesson] = useState<Lesson | null>(null);
-  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>({ kind: 'loading' });
   const [wrongStreak, setWrongStreak] = useState(0);
-  const [completedCount, setCompletedCount] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const startedAt = useRef<number>(Date.now());
+  const elapsedAtFinish = useRef<number>(0);
 
   useEffect(() => {
-    loadLesson(lessonId).then(setLesson);
+    loadLesson(lessonId).then((l) => {
+      setLesson(l);
+      if (l) {
+        setPhase({ kind: 'exercising', index: 0 });
+        startedAt.current = Date.now();
+      }
+    });
   }, [lessonId, loadLesson]);
 
-  if (!lesson) return <View style={styles.root} />;
-
-  const exercise = lesson.exercises[exerciseIndex];
-  const progress = (exerciseIndex + 1) / lesson.exercises.length;
+  if (!lesson || phase.kind === 'loading') return <View style={styles.root} />;
 
   const pushProgress = (count: number, finished: boolean) => {
-    if (!lesson) return;
     updateProgress({
       lessonId: lesson.id,
       completedExercises: count,
@@ -49,8 +59,8 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
   const handleResult = (correct: boolean) => {
     if (correct) {
       setWrongStreak(0);
-      const next = completedCount + 1;
-      setCompletedCount(next);
+      const next = correctCount + 1;
+      setCorrectCount(next);
       pushProgress(next, false);
     } else {
       const next = wrongStreak + 1;
@@ -63,13 +73,30 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
   };
 
   const handleNext = () => {
-    if (exerciseIndex >= lesson.exercises.length - 1) {
-      pushProgress(completedCount, true);
-      onComplete();
+    if (phase.kind !== 'exercising') return;
+    if (phase.index >= lesson.exercises.length - 1) {
+      pushProgress(correctCount, true);
+      elapsedAtFinish.current = Math.round((Date.now() - startedAt.current) / 1000);
+      setPhase({ kind: 'celebrating' });
     } else {
-      setExerciseIndex((i) => i + 1);
+      setPhase({ kind: 'exercising', index: phase.index + 1 });
     }
   };
+
+  if (phase.kind === 'celebrating') {
+    return (
+      <LessonCelebration
+        lesson={lesson}
+        correctCount={correctCount}
+        totalCount={lesson.exercises.length}
+        elapsedSeconds={elapsedAtFinish.current}
+        onContinue={onComplete}
+      />
+    );
+  }
+
+  const exercise = lesson.exercises[phase.index];
+  const progress = (phase.index + 1) / lesson.exercises.length;
 
   return (
     <View style={styles.root}>
