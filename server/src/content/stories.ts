@@ -279,4 +279,25 @@ export const STORIES: Story[] = [
     minutes: 6,
     thumbColor: 'berry',
   },
+
+  // Indonesian
+  {
+    id: 'id-story-pasar',
+    title: 'Pagi di pasar',
+    blurb: 'Buah segar, bumbu, dan seorang pedagang yang ramah.',
+    language: 'id-ID',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'id-story-warung',
+    title: 'Sore di warung kopi',
+    blurb: 'Kopi tubruk, hujan rintik, dan obrolan panjang.',
+    language: 'id-ID',
+    level: 'A2',
+    minutes: 5,
+    thumbColor: 'sky',
+  },
 ];

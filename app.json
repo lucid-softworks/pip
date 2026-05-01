@@ -15,7 +15,8 @@
       "package": "me.wvvw.pip",
       "adaptiveIcon": {
         "backgroundColor": "#F6EFE0"
-      }
+      },
+      "usesCleartextTraffic": true
     },
     "splash": {
       "backgroundColor": "#F6EFE0",

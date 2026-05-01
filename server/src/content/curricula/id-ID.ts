@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const indonesian: LanguageContent = {
+  prefix: 'id',
+  source: 'en-US',
+  target: 'id-ID',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Halo, apa kabar?',
+      tokens: ['Halo,', 'apa', 'kabar?'],
+      distractors: ['selamat', 'pagi', 'baik', 'saya'],
+      highlight: 'kabar?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Saya baik-baik saja, terima kasih.',
+      tokens: ['Saya', 'baik-baik', 'saja,', 'terima', 'kasih.'],
+      distractors: ['kamu', 'tolong', 'sangat', 'sama-sama'],
+      highlight: 'baik-baik',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Nama saya Maria.',
+      tokens: ['Nama', 'saya', 'Maria.'],
+      distractors: ['kamu', 'panggil', 'aku', 'siapa'],
+      highlight: 'Nama',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Senang bertemu denganmu.',
+      tokens: ['Senang', 'bertemu', 'denganmu.'],
+      distractors: ['halo', 'sangat', 'baik', 'kenal'],
+      highlight: 'bertemu',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Sampai besok.',
+      tokens: ['Sampai', 'besok.'],
+      distractors: ['jumpa', 'nanti', 'lagi', 'selamat'],
+      highlight: 'besok.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'satu' },
+    { source: 'two', target: 'dua' },
+    { source: 'three', target: 'tiga' },
+    { source: 'four', target: 'empat' },
+    { source: 'five', target: 'lima' },
+    { source: 'six', target: 'enam' },
+    { source: 'seven', target: 'tujuh' },
+    { source: 'eight', target: 'delapan' },
+    { source: 'nine', target: 'sembilan' },
+    { source: 'ten', target: 'sepuluh' },
+  ],
+  family: [
+    { source: 'mother', target: 'ibu' },
+    { source: 'father', target: 'ayah' },
+    { source: 'sister', target: 'saudari' },
+    { source: 'brother', target: 'saudara' },
+    { source: 'son', target: 'putra' },
+    { source: 'daughter', target: 'putri' },
+  ],
+  food: [
+    { source: 'bread', target: 'roti' },
+    { source: 'water', target: 'air' },
+    { source: 'coffee', target: 'kopi' },
+    { source: 'milk', target: 'susu' },
+    { source: 'apple', target: 'apel' },
+    { source: 'cheese', target: 'keju' },
+  ],
+};

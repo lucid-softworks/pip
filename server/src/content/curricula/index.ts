@@ -13,6 +13,7 @@ import { swedish } from './sv-SE.ts';
 import { norwegian } from './nb-NO.ts';
 import { greek } from './el-GR.ts';
 import { turkish } from './tr-TR.ts';
+import { indonesian } from './id-ID.ts';
 
 export const ALL_CURRICULA: Curriculum[] = [
   buildCurriculum(french),
@@ -27,6 +28,7 @@ export const ALL_CURRICULA: Curriculum[] = [
   buildCurriculum(norwegian),
   buildCurriculum(greek),
   buildCurriculum(turkish),
+  buildCurriculum(indonesian),
 ];
 
 export const CURRICULA_BY_ID: Record<CourseId, Curriculum> = Object.fromEntries(
