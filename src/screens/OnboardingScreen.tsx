@@ -16,27 +16,38 @@ import { useContent } from '@/state/ContentProvider';
 import { type Course, type CourseId, makeCourseId } from '@/data/types';
 import { CheckIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
-import { useT } from '@/i18n';
+import { useT, pickLocale, SUPPORTED_UI_LOCALES, type UILocale } from '@/i18n';
 
 export type OnboardingResult = {
   courseId: CourseId;
   userName: string;
   dailyMinutes: number;
+  uiLocale: UILocale;
 };
 
 type Props = {
   onFinish: (result: OnboardingResult) => void;
+  /** If provided, overrides the auto-detected default for the base-language step. */
+  initialUiLocale?: string;
   initialName?: string;
+  /** Called as soon as the user picks a base language so the app re-renders in it. */
+  onPickUiLocale?: (locale: UILocale) => void;
 };
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 const DEFAULT_NAME = 'Friend';
 const DEFAULT_COURSE: CourseId = makeCourseId('en-US', 'fr-FR');
 const DEFAULT_MINUTES = 10;
 
-export function OnboardingScreen({ onFinish, initialName }: Props) {
+export function OnboardingScreen({
+  onFinish,
+  initialUiLocale,
+  initialName,
+  onPickUiLocale,
+}: Props) {
   const t = useT();
   const [step, setStep] = useState(0);
+  const [uiLocale, setUiLocale] = useState<UILocale>(() => pickLocale(initialUiLocale));
   const [courseId, setCourseId] = useState<CourseId | null>(null);
   const [userName, setUserName] = useState(initialName ?? '');
   const [minutes, setMinutes] = useState<number | null>(null);
@@ -48,13 +59,20 @@ export function OnboardingScreen({ onFinish, initialName }: Props) {
       courseId: DEFAULT_COURSE,
       userName: DEFAULT_NAME,
       dailyMinutes: DEFAULT_MINUTES,
+      uiLocale,
     });
   const finish = () =>
     onFinish({
       courseId: courseId ?? DEFAULT_COURSE,
       userName: userName.trim() || DEFAULT_NAME,
       dailyMinutes: minutes ?? DEFAULT_MINUTES,
+      uiLocale,
     });
+
+  const pickUiLocale = (loc: UILocale) => {
+    setUiLocale(loc);
+    onPickUiLocale?.(loc);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -88,19 +106,22 @@ export function OnboardingScreen({ onFinish, initialName }: Props) {
 
       {step === 0 && <WelcomeStep onNext={next} />}
       {step === 1 && (
-        <LanguageStep selected={courseId} onPick={setCourseId} onNext={next} />
+        <BaseLanguageStep selected={uiLocale} onPick={pickUiLocale} onNext={next} />
       )}
       {step === 2 && (
+        <LanguageStep selected={courseId} onPick={setCourseId} onNext={next} />
+      )}
+      {step === 3 && (
         <NameStep
           value={userName}
           onChange={setUserName}
           onNext={next}
         />
       )}
-      {step === 3 && (
+      {step === 4 && (
         <RhythmStep selected={minutes} onPick={setMinutes} onNext={next} />
       )}
-      {step === 4 && (
+      {step === 5 && (
         <CompleteStep
           userName={userName.trim() || DEFAULT_NAME}
           courseId={courseId ?? DEFAULT_COURSE}
@@ -148,6 +169,67 @@ function Bullet({ text }: { text: string }) {
   );
 }
 
+// ---------- Step 1.5: Base (UI) language ----------
+
+const UI_LOCALE_FLAGS: Record<UILocale, string> = {
+  en: '🇬🇧',
+  es: '🇪🇸',
+  fr: '🇫🇷',
+  de: '🇩🇪',
+  pt: '🇵🇹',
+  it: '🇮🇹',
+};
+
+function BaseLanguageStep({
+  selected,
+  onPick,
+  onNext,
+}: {
+  selected: UILocale;
+  onPick: (loc: UILocale) => void;
+  onNext: () => void;
+}) {
+  const t = useT();
+  return (
+    <View style={styles.body}>
+      <Text style={styles.kicker}>{t('onboarding.step.1of4')}</Text>
+      <Text style={styles.title}>{t('onboarding.base.title')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.base.subtitle')}</Text>
+
+      <ScrollView
+        style={styles.list}
+        contentContainerStyle={{ gap: 10 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {SUPPORTED_UI_LOCALES.map((loc) => {
+          const isPicked = loc === selected;
+          return (
+            <Pressable
+              key={loc}
+              onPress={() => onPick(loc)}
+              style={[styles.langRow, isPicked && styles.langRowPicked]}
+            >
+              <Text style={styles.langFlag}>{UI_LOCALE_FLAGS[loc]}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.langName}>
+                  {t(`lang.uiLocale.${loc}` as const)}
+                </Text>
+              </View>
+              {isPicked && (
+                <View style={styles.pickedBadge}>
+                  <CheckIcon size={14} color={colors.white} />
+                </View>
+              )}
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      <PrimaryButton label={t('common.continue')} onPress={onNext} />
+    </View>
+  );
+}
+
 // ---------- Step 2: Language ----------
 
 function LanguageStep({
@@ -165,7 +247,7 @@ function LanguageStep({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>{t('onboarding.step.1of4')}</Text>
+      <Text style={styles.kicker}>{t('onboarding.step.2of4')}</Text>
       <Text style={styles.title}>{t('onboarding.language.title')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.language.subtitle')}</Text>
 
@@ -229,7 +311,7 @@ function NameStep({
   const t = useT();
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>{t('onboarding.step.2of4')}</Text>
+      <Text style={styles.kicker}>{t('onboarding.step.3of4')}</Text>
       <Text style={styles.title}>{t('onboarding.name.title')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.name.subtitle')}</Text>
 
@@ -280,7 +362,7 @@ function RhythmStep({
   const t = useT();
   return (
     <View style={styles.body}>
-      <Text style={styles.kicker}>{t('onboarding.step.3of4')}</Text>
+      <Text style={styles.kicker}>{t('onboarding.step.4of4')}</Text>
       <Text style={styles.title}>{t('onboarding.rhythm.title')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.rhythm.subtitle')}</Text>
 

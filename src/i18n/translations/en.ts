@@ -56,9 +56,15 @@ export const en = {
   'onboarding.welcome.bullet.storiesOnly': 'Stories are the only paid part',
   'onboarding.welcome.cta': 'Get started',
 
-  'onboarding.step.1of4': 'Step 1 of 4',
-  'onboarding.step.2of4': 'Step 2 of 4',
-  'onboarding.step.3of4': 'Step 3 of 4',
+  'onboarding.step.1of4': 'Step 1 of 5',
+  'onboarding.step.2of4': 'Step 2 of 5',
+  'onboarding.step.3of4': 'Step 3 of 5',
+  'onboarding.step.4of4': 'Step 4 of 5',
+
+  'onboarding.base.title': 'What do you speak?',
+  'onboarding.base.subtitle':
+    "We'll use this for the app's interface. Your learning language comes next.",
+  'onboarding.base.deviceDefault': 'Detected from your device',
 
   'onboarding.language.title': 'What would you like to learn?',
   'onboarding.language.subtitle': 'Tap one. You can add more later.',
@@ -188,12 +194,24 @@ export const en = {
   'progress.noStreaks.body':
     'Pip tracks what you know, not what you missed. Whenever you come back, you pick up where you left off.',
 
+  // ---------- App language (settings + onboarding shared) ----------
+  'lang.appLanguage': 'App language',
+  'lang.uiLocale.en': 'English',
+  'lang.uiLocale.es': 'Spanish (Español)',
+  'lang.uiLocale.fr': 'French (Français)',
+  'lang.uiLocale.de': 'German (Deutsch)',
+  'lang.uiLocale.pt': 'Portuguese (Português)',
+  'lang.uiLocale.it': 'Italian (Italiano)',
+
   // ---------- You / Settings ----------
   'you.title': 'You',
   'you.subtitle': 'Settings, your way.',
   'you.profile.tagline': 'Tap to edit · free, the whole way',
   'you.languageHint':
     'Tap the language chip on Home to switch courses or add a new language.',
+  'you.section.language': 'Language',
+  'you.appLanguage.title': 'App language',
+  'you.appLanguage.help': "What pip's interface is in",
   'you.section.settings': 'Settings',
   'you.setting.slowSpeech.title': 'Slower speech',
   'you.setting.slowSpeech.help': 'Read prompts a little more slowly',

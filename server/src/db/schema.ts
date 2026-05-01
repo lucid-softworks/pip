@@ -73,6 +73,7 @@ export const userProfile = pgTable('user_profile', {
   slowSpeech: boolean('slow_speech').notNull().default(false),
   hapticFeedback: boolean('haptic_feedback').notNull().default(true),
   activeCourseId: text('active_course_id'),
+  uiLocale: text('ui_locale'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

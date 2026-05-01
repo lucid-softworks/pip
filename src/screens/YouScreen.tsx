@@ -16,21 +16,40 @@ import Svg, { Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
 import { fonts } from '@/theme/typography';
-import { useT } from '@/i18n';
+import { useT, useLocale, SUPPORTED_UI_LOCALES, type UILocale } from '@/i18n';
 
 type Props = {
   userName: string;
+  uiLocale: string | undefined;
   onSignOut: () => void | Promise<void>;
   onUpdateName: (name: string) => void | Promise<void>;
+  onUpdateUiLocale: (locale: UILocale) => void | Promise<void>;
 };
 
-export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
+const UI_LOCALE_FLAGS: Record<UILocale, string> = {
+  en: '🇬🇧',
+  es: '🇪🇸',
+  fr: '🇫🇷',
+  de: '🇩🇪',
+  pt: '🇵🇹',
+  it: '🇮🇹',
+};
+
+export function YouScreen({
+  userName,
+  uiLocale: _uiLocaleProp,
+  onSignOut,
+  onUpdateName,
+  onUpdateUiLocale,
+}: Props) {
   const t = useT();
+  const activeLocale = useLocale();
   const [reduceMotion, setReduceMotion] = useState(false);
   const [slowSpeech, setSlowSpeech] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
   const [editingName, setEditingName] = useState(false);
   const [draftName, setDraftName] = useState(userName);
+  const [editingLocale, setEditingLocale] = useState(false);
 
   const initial = userName.trim().charAt(0).toUpperCase() || 'F';
 
@@ -73,6 +92,19 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
         </Pressable>
 
         <Text style={styles.helperHint}>{t('you.languageHint')}</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('you.section.language')}</Text>
+          <Pressable style={styles.settingRow} onPress={() => setEditingLocale(true)}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingTitle}>{t('you.appLanguage.title')}</Text>
+              <Text style={styles.settingHelper}>{t('you.appLanguage.help')}</Text>
+            </View>
+            <Text style={styles.settingValue}>
+              {UI_LOCALE_FLAGS[activeLocale]} {t(`lang.uiLocale.${activeLocale}` as const)}
+            </Text>
+          </Pressable>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('you.section.settings')}</Text>
@@ -197,6 +229,52 @@ export function YouScreen({ userName, onSignOut, onUpdateName }: Props) {
           </SafeAreaView>
         </KeyboardAvoidingView>
       </Modal>
+
+      <Modal
+        visible={editingLocale}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setEditingLocale(false)}
+      >
+        <SafeAreaView style={styles.sheetRoot} edges={['bottom']}>
+          <View style={styles.sheetHeader}>
+            <Pressable
+              style={styles.sheetHeaderSideBtn}
+              onPress={() => setEditingLocale(false)}
+              hitSlop={8}
+            >
+              <Text style={styles.sheetHeaderCancel}>{t('common.cancel')}</Text>
+            </Pressable>
+            <Text style={styles.sheetHeaderTitle}>{t('you.appLanguage.title')}</Text>
+            <View style={styles.sheetHeaderSideBtn} />
+          </View>
+          <View style={styles.sheetBody}>
+            {SUPPORTED_UI_LOCALES.map((loc) => {
+              const isActive = loc === activeLocale;
+              return (
+                <Pressable
+                  key={loc}
+                  onPress={async () => {
+                    setEditingLocale(false);
+                    await onUpdateUiLocale(loc);
+                  }}
+                  style={[styles.localeRow, isActive && styles.localeRowActive]}
+                >
+                  <Text style={styles.localeFlag}>{UI_LOCALE_FLAGS[loc]}</Text>
+                  <Text style={styles.localeName}>
+                    {t(`lang.uiLocale.${loc}` as const)}
+                  </Text>
+                  {isActive && (
+                    <View style={styles.localeBadge}>
+                      <Text style={styles.localeBadgeText}>✓</Text>
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+        </SafeAreaView>
+      </Modal>
     </View>
   );
 }
@@ -306,6 +384,47 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.muted,
     marginTop: 2,
+  },
+  settingValue: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: colors.ink2,
+  },
+
+  localeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    padding: 14,
+    backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: 14,
+    marginBottom: 8,
+  },
+  localeRowActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primarySoft,
+  },
+  localeFlag: { fontSize: 26 },
+  localeName: {
+    flex: 1,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: colors.ink,
+  },
+  localeBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  localeBadgeText: {
+    fontFamily: fonts.bodyHeavy,
+    fontSize: 13,
+    color: colors.white,
   },
 
   signOutRow: {

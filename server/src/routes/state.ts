@@ -144,6 +144,7 @@ export const stateRoutes = new Elysia({ prefix: '/api/me' })
         ...(body.reduceMotion !== undefined && { reduceMotion: body.reduceMotion }),
         ...(body.slowSpeech !== undefined && { slowSpeech: body.slowSpeech }),
         ...(body.hapticFeedback !== undefined && { hapticFeedback: body.hapticFeedback }),
+        ...(body.uiLocale !== undefined && { uiLocale: body.uiLocale }),
       };
       const [row] = await db
         .insert(userProfile)
@@ -163,6 +164,7 @@ export const stateRoutes = new Elysia({ prefix: '/api/me' })
         reduceMotion: t.Optional(t.Boolean()),
         slowSpeech: t.Optional(t.Boolean()),
         hapticFeedback: t.Optional(t.Boolean()),
+        uiLocale: t.Optional(t.String()),
       }),
     },
   )

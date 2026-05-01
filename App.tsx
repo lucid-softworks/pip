@@ -65,6 +65,7 @@ export default function App() {
   const [onboarded, setOnboarded] = useState(false);
   const [userName, setUserName] = useState(DEFAULT_NAME);
   const [dailyMinutes, setDailyMinutes] = useState(DEFAULT_MINUTES);
+  const [uiLocale, setUiLocaleState] = useState<string | undefined>(undefined);
   const [tab, setTab] = useState<TabKey>('learn');
   const [overlay, setOverlay] = useState<Overlay>({ kind: 'none' });
   const [activeCourseId, setActiveCourseId] = useState<CourseId>(DEFAULT_COURSE);
@@ -82,12 +83,14 @@ export default function App() {
       if (name) setUserName(name);
       setDailyMinutes(profile.dailyMinutesGoal);
       if (profile.activeCourseId) setActiveCourseId(profile.activeCourseId);
+      if (profile.uiLocale) setUiLocaleState(profile.uiLocale);
       setOnboarded(Boolean(profile.preferredName));
       await setPrefs({
         onboarded: Boolean(profile.preferredName),
         userName: name,
         dailyMinutes: profile.dailyMinutesGoal,
         activeCourseId: profile.activeCourseId,
+        uiLocale: profile.uiLocale,
       });
     } else {
       setOnboarded(false);
@@ -119,6 +122,7 @@ export default function App() {
         setActiveCourseId(prefs.activeCourseId);
         setEnrolledCourses(new Set([prefs.activeCourseId]));
       }
+      if (prefs.uiLocale) setUiLocaleState(prefs.uiLocale);
       setOnboarded(prefs.onboarded);
 
       if (!token) {
@@ -178,6 +182,12 @@ export default function App() {
     updateProfile({ preferredName: name }).catch(() => {});
   }, []);
 
+  const handleUpdateUiLocale = useCallback(async (locale: string) => {
+    setUiLocaleState(locale);
+    await setPrefs({ uiLocale: locale });
+    updateProfile({ uiLocale: locale }).catch(() => {});
+  }, []);
+
   const handleSignOut = useCallback(async () => {
     await signOut();
     await clearPrefs();
@@ -198,12 +208,14 @@ export default function App() {
     setDailyMinutes(result.dailyMinutes);
     setActiveCourseId(result.courseId);
     setEnrolledCourses(new Set([result.courseId]));
+    setUiLocaleState(result.uiLocale);
     setOnboarded(true);
     await setPrefs({
       onboarded: true,
       userName: result.userName,
       dailyMinutes: result.dailyMinutes,
       activeCourseId: result.courseId,
+      uiLocale: result.uiLocale,
     });
     // Push to server in parallel; failures are non-fatal here since prefs are saved locally.
     Promise.all([
@@ -211,6 +223,7 @@ export default function App() {
         preferredName: result.userName,
         dailyMinutesGoal: result.dailyMinutes,
         activeCourseId: result.courseId,
+        uiLocale: result.uiLocale,
       }),
       addEnrollment(result.courseId),
     ]).catch(() => {
@@ -288,7 +301,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <I18nProvider>
+      <I18nProvider locale={uiLocale}>
         <ContentProvider>
           <StatusBar style="dark" />
         <SafeAreaView style={styles.shell} edges={['top', 'bottom']}>
@@ -298,6 +311,8 @@ export default function App() {
             <OnboardingScreen
               onFinish={handleOnboardingFinish}
               initialName={accountName ?? userName}
+              initialUiLocale={uiLocale}
+              onPickUiLocale={setUiLocaleState}
             />
           ) : (
             <>
@@ -318,8 +333,10 @@ export default function App() {
                 {tab === 'you' && (
                   <YouScreen
                     userName={userName}
+                    uiLocale={uiLocale}
                     onSignOut={handleSignOut}
                     onUpdateName={handleUpdateName}
+                    onUpdateUiLocale={handleUpdateUiLocale}
                   />
                 )}
               </View>

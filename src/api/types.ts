@@ -29,6 +29,7 @@ export type LocalPrefs = {
   userName: string | null;
   dailyMinutes: number | null;
   activeCourseId: string | null;
+  uiLocale: string | null;
 };
 
 export type RemoteProfile = {
@@ -39,6 +40,7 @@ export type RemoteProfile = {
   slowSpeech: boolean;
   hapticFeedback: boolean;
   activeCourseId: string | null;
+  uiLocale: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -69,6 +71,7 @@ export type ProfilePatch = Partial<{
   reduceMotion: boolean;
   slowSpeech: boolean;
   hapticFeedback: boolean;
+  uiLocale: string;
 }>;
 
 export type ProgressUpdate = {
