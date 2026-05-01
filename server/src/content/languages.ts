@@ -5,10 +5,12 @@ export const LANGUAGES: LanguageMeta[] = [
 
   // Big European languages
   { code: 'fr-FR', name: 'French', flag: '🇫🇷' },
-  { code: 'es-ES', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'es-ES', name: 'Spanish (Spain)', flag: '🇪🇸' },
+  { code: 'es-MX', name: 'Spanish (Latin America)', flag: '🇲🇽' },
   { code: 'it-IT', name: 'Italian', flag: '🇮🇹' },
   { code: 'de-DE', name: 'German', flag: '🇩🇪' },
-  { code: 'pt-BR', name: 'Portuguese', flag: '🇧🇷' },
+  { code: 'pt-BR', name: 'Portuguese (Brazil)', flag: '🇧🇷' },
+  { code: 'pt-PT', name: 'Portuguese (Portugal)', flag: '🇵🇹' },
   { code: 'nl-NL', name: 'Dutch', flag: '🇳🇱' },
   { code: 'pl-PL', name: 'Polish', flag: '🇵🇱' },
 

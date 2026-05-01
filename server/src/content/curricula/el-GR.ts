@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const greek: LanguageContent = {
+  prefix: 'el',
+  source: 'en-US',
+  target: 'el-GR',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Γειά, τι κάνεις;',
+      tokens: ['Γειά,', 'τι', 'κάνεις;'],
+      distractors: ['καλά', 'εσύ', 'εγώ', 'πώς'],
+      highlight: 'κάνεις;',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Είμαι καλά, ευχαριστώ.',
+      tokens: ['Είμαι', 'καλά,', 'ευχαριστώ.'],
+      distractors: ['εσύ', 'παρακαλώ', 'πολύ', 'καλημέρα'],
+      highlight: 'Είμαι',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Με λένε Μαρία.',
+      tokens: ['Με', 'λένε', 'Μαρία.'],
+      distractors: ['είμαι', 'σε', 'όνομα', 'το', 'μου'],
+      highlight: 'λένε',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Χάρηκα.',
+      tokens: ['Χάρηκα.'],
+      distractors: ['πολύ', 'γνωριμία', 'γειά', 'καλά'],
+      highlight: 'Χάρηκα.',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Τα λέμε αύριο.',
+      tokens: ['Τα', 'λέμε', 'αύριο.'],
+      distractors: ['αντίο', 'σύντομα', 'γειά', 'σήμερα'],
+      highlight: 'αύριο.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'ένα' },
+    { source: 'two', target: 'δύο' },
+    { source: 'three', target: 'τρία' },
+    { source: 'four', target: 'τέσσερα' },
+    { source: 'five', target: 'πέντε' },
+    { source: 'six', target: 'έξι' },
+    { source: 'seven', target: 'εφτά' },
+    { source: 'eight', target: 'οχτώ' },
+    { source: 'nine', target: 'εννιά' },
+    { source: 'ten', target: 'δέκα' },
+  ],
+  family: [
+    { source: 'mother', target: 'μητέρα' },
+    { source: 'father', target: 'πατέρας' },
+    { source: 'sister', target: 'αδελφή' },
+    { source: 'brother', target: 'αδελφός' },
+    { source: 'son', target: 'γιος' },
+    { source: 'daughter', target: 'κόρη' },
+  ],
+  food: [
+    { source: 'bread', target: 'ψωμί' },
+    { source: 'water', target: 'νερό' },
+    { source: 'coffee', target: 'καφές' },
+    { source: 'milk', target: 'γάλα' },
+    { source: 'apple', target: 'μήλο' },
+    { source: 'cheese', target: 'τυρί' },
+  ],
+};

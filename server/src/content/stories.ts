@@ -216,4 +216,67 @@ export const STORIES: Story[] = [
     minutes: 5,
     thumbColor: 'moss',
   },
+
+  // Norwegian
+  {
+    id: 'no-story-fjord',
+    title: 'Fjord om morgenen',
+    blurb: 'Tåke over vannet og en gammel kaffekopp.',
+    language: 'nb-NO',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'sky',
+    freeThisWeek: true,
+  },
+  {
+    id: 'no-story-hytte',
+    title: 'En kveld på hytta',
+    blurb: 'Peisen brenner, og noen forteller en gammel historie.',
+    language: 'nb-NO',
+    level: 'A2',
+    minutes: 6,
+    thumbColor: 'berry',
+  },
+
+  // Greek
+  {
+    id: 'el-story-taverna',
+    title: 'Ένα δείπνο στην ταβέρνα',
+    blurb: 'Ψωμί, ελιές, και πολλά γέλια.',
+    language: 'el-GR',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'el-story-nisi',
+    title: 'Πρωί στο νησί',
+    blurb: 'Καφές με θέα τη θάλασσα και ένας ηλικιωμένος ψαράς.',
+    language: 'el-GR',
+    level: 'A2',
+    minutes: 5,
+    thumbColor: 'sky',
+  },
+
+  // Turkish
+  {
+    id: 'tr-story-kahvalti',
+    title: 'Pazar günü kahvaltı',
+    blurb: 'Çay, peynir ve uzun bir sohbet.',
+    language: 'tr-TR',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'tr-story-carsi',
+    title: 'Kapalı Çarşıda bir gün',
+    blurb: 'Renkler, kokular ve dostane bir pazarlık.',
+    language: 'tr-TR',
+    level: 'A2',
+    minutes: 6,
+    thumbColor: 'berry',
+  },
 ];

@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const norwegian: LanguageContent = {
+  prefix: 'no',
+  source: 'en-US',
+  target: 'nb-NO',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hei, hvordan har du det?',
+      tokens: ['Hei,', 'hvordan', 'har', 'du', 'det?'],
+      distractors: ['ha', 'jeg', 'bra', 'hallo'],
+      highlight: 'har',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Jeg har det bra, takk.',
+      tokens: ['Jeg', 'har', 'det', 'bra,', 'takk.'],
+      distractors: ['er', 'meg', 'veldig', 'vær', 'så'],
+      highlight: 'bra,',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: 'Jeg heter Marie.',
+      tokens: ['Jeg', 'heter', 'Marie.'],
+      distractors: ['er', 'mitt', 'navn', 'du', 'heter'],
+      highlight: 'heter',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Hyggelig å treffe deg.',
+      tokens: ['Hyggelig', 'å', 'treffe', 'deg.'],
+      distractors: ['veldig', 'bra', 'hallo', 'møte'],
+      highlight: 'Hyggelig',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Vi sees i morgen.',
+      tokens: ['Vi', 'sees', 'i', 'morgen.'],
+      distractors: ['ha', 'det', 'snart', 'senere'],
+      highlight: 'morgen.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'én' },
+    { source: 'two', target: 'to' },
+    { source: 'three', target: 'tre' },
+    { source: 'four', target: 'fire' },
+    { source: 'five', target: 'fem' },
+    { source: 'six', target: 'seks' },
+    { source: 'seven', target: 'sju' },
+    { source: 'eight', target: 'åtte' },
+    { source: 'nine', target: 'ni' },
+    { source: 'ten', target: 'ti' },
+  ],
+  family: [
+    { source: 'mother', target: 'mor' },
+    { source: 'father', target: 'far' },
+    { source: 'sister', target: 'søster' },
+    { source: 'brother', target: 'bror' },
+    { source: 'son', target: 'sønn' },
+    { source: 'daughter', target: 'datter' },
+  ],
+  food: [
+    { source: 'bread', target: 'brød' },
+    { source: 'water', target: 'vann' },
+    { source: 'coffee', target: 'kaffe' },
+    { source: 'milk', target: 'melk' },
+    { source: 'apple', target: 'eple' },
+    { source: 'cheese', target: 'ost' },
+  ],
+};

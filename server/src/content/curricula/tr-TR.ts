@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const turkish: LanguageContent = {
+  prefix: 'tr',
+  source: 'en-US',
+  target: 'tr-TR',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Merhaba, nasılsın?',
+      tokens: ['Merhaba,', 'nasılsın?'],
+      distractors: ['selam', 'iyiyim', 'ben', 'sen'],
+      highlight: 'nasılsın?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'İyiyim, teşekkür ederim.',
+      tokens: ['İyiyim,', 'teşekkür', 'ederim.'],
+      distractors: ['ben', 'lütfen', 'çok', 'sen'],
+      highlight: 'İyiyim,',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: 'Adım Marie.',
+      tokens: ['Adım', 'Marie.'],
+      distractors: ['benim', 'ismim', 'sen', 'ben', 'adın'],
+      highlight: 'Adım',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Tanıştığımıza memnun oldum.',
+      tokens: ['Tanıştığımıza', 'memnun', 'oldum.'],
+      distractors: ['çok', 'iyi', 'merhaba', 'sevindim'],
+      highlight: 'memnun',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Yarın görüşürüz.',
+      tokens: ['Yarın', 'görüşürüz.'],
+      distractors: ['hoşçakal', 'sonra', 'şimdi', 'bugün'],
+      highlight: 'Yarın',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'bir' },
+    { source: 'two', target: 'iki' },
+    { source: 'three', target: 'üç' },
+    { source: 'four', target: 'dört' },
+    { source: 'five', target: 'beş' },
+    { source: 'six', target: 'altı' },
+    { source: 'seven', target: 'yedi' },
+    { source: 'eight', target: 'sekiz' },
+    { source: 'nine', target: 'dokuz' },
+    { source: 'ten', target: 'on' },
+  ],
+  family: [
+    { source: 'mother', target: 'anne' },
+    { source: 'father', target: 'baba' },
+    { source: 'sister', target: 'kız kardeş' },
+    { source: 'brother', target: 'erkek kardeş' },
+    { source: 'son', target: 'oğul' },
+    { source: 'daughter', target: 'kız' },
+  ],
+  food: [
+    { source: 'bread', target: 'ekmek' },
+    { source: 'water', target: 'su' },
+    { source: 'coffee', target: 'kahve' },
+    { source: 'milk', target: 'süt' },
+    { source: 'apple', target: 'elma' },
+    { source: 'cheese', target: 'peynir' },
+  ],
+};
