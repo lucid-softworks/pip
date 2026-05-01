@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { LANGUAGES } from '../content/languages.ts';
-import { CURRICULA_BY_ID } from '../content/curricula.ts';
+import { CURRICULA_BY_ID } from '../content/curricula/index.ts';
 import { STORIES } from '../content/stories.ts';
 import { type Course, makeCourseId } from '../content/types.ts';
 

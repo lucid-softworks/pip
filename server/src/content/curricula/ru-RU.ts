@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const russian: LanguageContent = {
+  prefix: 'ru',
+  source: 'en-US',
+  target: 'ru-RU',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Привет, как дела?',
+      tokens: ['Привет,', 'как', 'дела?'],
+      distractors: ['здравствуйте', 'ты', 'хорошо', 'спасибо'],
+      highlight: 'дела?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Хорошо, спасибо.',
+      tokens: ['Хорошо,', 'спасибо.'],
+      distractors: ['пожалуйста', 'очень', 'плохо', 'нет'],
+      highlight: 'спасибо.',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Меня зовут Мария.',
+      tokens: ['Меня', 'зовут', 'Мария.'],
+      distractors: ['тебя', 'имя', 'мое', 'я', 'это'],
+      highlight: 'зовут',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Очень приятно.',
+      tokens: ['Очень', 'приятно.'],
+      distractors: ['рад', 'тебя', 'видеть', 'привет'],
+      highlight: 'приятно.',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'До завтра.',
+      tokens: ['До', 'завтра.'],
+      distractors: ['свидания', 'скоро', 'пока', 'позже'],
+      highlight: 'завтра.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'один' },
+    { source: 'two', target: 'два' },
+    { source: 'three', target: 'три' },
+    { source: 'four', target: 'четыре' },
+    { source: 'five', target: 'пять' },
+    { source: 'six', target: 'шесть' },
+    { source: 'seven', target: 'семь' },
+    { source: 'eight', target: 'восемь' },
+    { source: 'nine', target: 'девять' },
+    { source: 'ten', target: 'десять' },
+  ],
+  family: [
+    { source: 'mother', target: 'мама' },
+    { source: 'father', target: 'папа' },
+    { source: 'sister', target: 'сестра' },
+    { source: 'brother', target: 'брат' },
+    { source: 'son', target: 'сын' },
+    { source: 'daughter', target: 'дочь' },
+  ],
+  food: [
+    { source: 'bread', target: 'хлеб' },
+    { source: 'water', target: 'вода' },
+    { source: 'coffee', target: 'кофе' },
+    { source: 'milk', target: 'молоко' },
+    { source: 'apple', target: 'яблоко' },
+    { source: 'cheese', target: 'сыр' },
+  ],
+};

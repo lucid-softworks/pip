@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const spanish: LanguageContent = {
+  prefix: 'es',
+  source: 'en-US',
+  target: 'es-ES',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: '¿Hola, cómo estás?',
+      tokens: ['¿Hola,', 'cómo', 'estás?'],
+      distractors: ['adiós', 'tú', 'soy', 'bien', 'qué'],
+      highlight: 'estás?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Estoy bien, gracias.',
+      tokens: ['Estoy', 'bien,', 'gracias.'],
+      distractors: ['soy', 'tú', 'por', 'favor', 'muy'],
+      highlight: 'Estoy',
+    },
+    {
+      prompt: 'My name is María.',
+      answer: 'Me llamo María.',
+      tokens: ['Me', 'llamo', 'María.'],
+      distractors: ['mi', 'nombre', 'es', 'tú', 'te'],
+      highlight: 'llamo',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Mucho gusto.',
+      tokens: ['Mucho', 'gusto.'],
+      distractors: ['muy', 'bien', 'encantado', 'mucha', 'pena'],
+      highlight: 'Mucho',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Hasta mañana.',
+      tokens: ['Hasta', 'mañana.'],
+      distractors: ['adiós', 'pronto', 'luego', 'siempre'],
+      highlight: 'Hasta',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'uno' },
+    { source: 'two', target: 'dos' },
+    { source: 'three', target: 'tres' },
+    { source: 'four', target: 'cuatro' },
+    { source: 'five', target: 'cinco' },
+    { source: 'six', target: 'seis' },
+    { source: 'seven', target: 'siete' },
+    { source: 'eight', target: 'ocho' },
+    { source: 'nine', target: 'nueve' },
+    { source: 'ten', target: 'diez' },
+  ],
+  family: [
+    { source: 'mother', target: 'madre' },
+    { source: 'father', target: 'padre' },
+    { source: 'sister', target: 'hermana' },
+    { source: 'brother', target: 'hermano' },
+    { source: 'son', target: 'hijo' },
+    { source: 'daughter', target: 'hija' },
+  ],
+  food: [
+    { source: 'bread', target: 'pan' },
+    { source: 'water', target: 'agua' },
+    { source: 'coffee', target: 'café' },
+    { source: 'milk', target: 'leche' },
+    { source: 'apple', target: 'manzana' },
+    { source: 'cheese', target: 'queso' },
+  ],
+};

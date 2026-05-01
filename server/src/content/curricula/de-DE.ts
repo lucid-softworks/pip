@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const german: LanguageContent = {
+  prefix: 'de',
+  source: 'en-US',
+  target: 'de-DE',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hallo, wie geht es dir?',
+      tokens: ['Hallo,', 'wie', 'geht', 'es', 'dir?'],
+      distractors: ['Tag', 'mir', 'ist', 'du', 'gut'],
+      highlight: 'geht',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Mir geht es gut, danke.',
+      tokens: ['Mir', 'geht', 'es', 'gut,', 'danke.'],
+      distractors: ['dir', 'ist', 'sehr', 'bitte', 'auch'],
+      highlight: 'gut,',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: 'Ich heiße Marie.',
+      tokens: ['Ich', 'heiße', 'Marie.'],
+      distractors: ['bin', 'mein', 'Name', 'du', 'heißt'],
+      highlight: 'heiße',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Freut mich.',
+      tokens: ['Freut', 'mich.'],
+      distractors: ['dich', 'sehr', 'gut', 'angenehm', 'kennen'],
+      highlight: 'Freut',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Bis morgen.',
+      tokens: ['Bis', 'morgen.'],
+      distractors: ['heute', 'gleich', 'später', 'bald', 'tschüss'],
+      highlight: 'Bis',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'eins' },
+    { source: 'two', target: 'zwei' },
+    { source: 'three', target: 'drei' },
+    { source: 'four', target: 'vier' },
+    { source: 'five', target: 'fünf' },
+    { source: 'six', target: 'sechs' },
+    { source: 'seven', target: 'sieben' },
+    { source: 'eight', target: 'acht' },
+    { source: 'nine', target: 'neun' },
+    { source: 'ten', target: 'zehn' },
+  ],
+  family: [
+    { source: 'mother', target: 'Mutter' },
+    { source: 'father', target: 'Vater' },
+    { source: 'sister', target: 'Schwester' },
+    { source: 'brother', target: 'Bruder' },
+    { source: 'son', target: 'Sohn' },
+    { source: 'daughter', target: 'Tochter' },
+  ],
+  food: [
+    { source: 'bread', target: 'Brot' },
+    { source: 'water', target: 'Wasser' },
+    { source: 'coffee', target: 'Kaffee' },
+    { source: 'milk', target: 'Milch' },
+    { source: 'apple', target: 'Apfel' },
+    { source: 'cheese', target: 'Käse' },
+  ],
+};

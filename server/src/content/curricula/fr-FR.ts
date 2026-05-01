@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const french: LanguageContent = {
+  prefix: 'fr',
+  source: 'en-US',
+  target: 'fr-FR',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Bonjour, comment ça va ?',
+      tokens: ['Bonjour,', 'comment', 'ça', 'va', '?'],
+      distractors: ['salut', 'tu', 'es', 'bien'],
+      highlight: 'ça',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Je vais bien, merci.',
+      tokens: ['Je', 'vais', 'bien,', 'merci.'],
+      distractors: ['suis', 'tu', "s'il", 'plaît', 'très'],
+      highlight: 'vais',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: "Je m'appelle Marie.",
+      tokens: ['Je', "m'appelle", 'Marie.'],
+      distractors: ['suis', 'mon', 'nom', 'tu', "t'appelles"],
+      highlight: "m'appelle",
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Enchantée de te rencontrer.',
+      tokens: ['Enchantée', 'de', 'te', 'rencontrer.'],
+      distractors: ['très', 'bien', 'je', 'vois', 'salut'],
+      highlight: 'Enchantée',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'À demain.',
+      tokens: ['À', 'demain.'],
+      distractors: ['au', 'revoir', 'bientôt', 'plus', 'tard'],
+      highlight: 'À',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'un' },
+    { source: 'two', target: 'deux' },
+    { source: 'three', target: 'trois' },
+    { source: 'four', target: 'quatre' },
+    { source: 'five', target: 'cinq' },
+    { source: 'six', target: 'six' },
+    { source: 'seven', target: 'sept' },
+    { source: 'eight', target: 'huit' },
+    { source: 'nine', target: 'neuf' },
+    { source: 'ten', target: 'dix' },
+  ],
+  family: [
+    { source: 'mother', target: 'mère' },
+    { source: 'father', target: 'père' },
+    { source: 'sister', target: 'sœur' },
+    { source: 'brother', target: 'frère' },
+    { source: 'son', target: 'fils' },
+    { source: 'daughter', target: 'fille' },
+  ],
+  food: [
+    { source: 'bread', target: 'pain' },
+    { source: 'water', target: 'eau' },
+    { source: 'coffee', target: 'café' },
+    { source: 'milk', target: 'lait' },
+    { source: 'apple', target: 'pomme' },
+    { source: 'cheese', target: 'fromage' },
+  ],
+};

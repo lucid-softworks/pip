@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/theme/colors';
@@ -44,80 +51,81 @@ export function LanguageSheet({
   return (
     <Modal
       visible={visible}
-      transparent
       animationType="slide"
+      presentationStyle="pageSheet"
       onRequestClose={onClose}
-      statusBarTranslucent
     >
-      <View style={styles.modalRoot}>
-        <Pressable style={styles.backdrop} onPress={onClose} />
-        <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-          <View style={styles.sheet}>
-            <View style={styles.handle} />
-            <View style={styles.header}>
-              {mode === 'add' && (
-                <Pressable
-                  style={styles.backBtn}
-                  onPress={() => setMode('switch')}
-                  hitSlop={8}
-                >
-                  <BackIcon />
-                </Pressable>
-              )}
-              <Text style={styles.title}>
-                {mode === 'switch' ? 'Your courses' : 'Add a language'}
-              </Text>
-              <Pressable style={styles.closeBtn} onPress={onClose} hitSlop={8}>
-                <CloseIcon />
+      <SafeAreaView style={styles.sheetRoot} edges={['bottom']}>
+        <View style={styles.header}>
+          {mode === 'add' ? (
+            <Pressable
+              style={styles.headerSideBtn}
+              onPress={() => setMode('switch')}
+              hitSlop={8}
+            >
+              <BackIcon />
+            </Pressable>
+          ) : (
+            <View style={styles.headerSideBtn} />
+          )}
+          <Text style={styles.title}>
+            {mode === 'switch' ? 'Your courses' : 'Add a language'}
+          </Text>
+          <Pressable style={styles.headerSideBtn} onPress={onClose} hitSlop={8}>
+            <CloseIcon />
+          </Pressable>
+        </View>
+
+        {mode === 'switch' && (
+          <>
+            <Text style={styles.subtitle}>Tap one to switch.</Text>
+            <ScrollView
+              contentContainerStyle={styles.listInner}
+              showsVerticalScrollIndicator={false}
+            >
+              {enrolled.map((c) => (
+                <CourseRow
+                  key={c.id}
+                  course={c}
+                  active={c.id === activeCourseId}
+                  onPress={() => {
+                    onSwitchCourse(c.id);
+                    onClose();
+                  }}
+                />
+              ))}
+              <Pressable style={styles.addCta} onPress={() => setMode('add')}>
+                <Text style={styles.addCtaText}>+ Add a language</Text>
               </Pressable>
-            </View>
+            </ScrollView>
+          </>
+        )}
 
-            {mode === 'switch' && (
-              <>
-                <Text style={styles.subtitle}>Tap one to switch.</Text>
-                <View style={styles.list}>
-                  {enrolled.map((c) => (
-                    <CourseRow
-                      key={c.id}
-                      course={c}
-                      active={c.id === activeCourseId}
-                      onPress={() => {
-                        onSwitchCourse(c.id);
-                        onClose();
-                      }}
-                    />
-                  ))}
-                </View>
-                <Pressable style={styles.addCta} onPress={() => setMode('add')}>
-                  <Text style={styles.addCtaText}>+ Add a language</Text>
-                </Pressable>
-              </>
-            )}
-
-            {mode === 'add' && (
-              <>
-                <Text style={styles.subtitle}>Pick another to start learning.</Text>
-                <View style={styles.list}>
-                  {addable.length === 0 && (
-                    <Text style={styles.empty}>You've enrolled in everything we've got.</Text>
-                  )}
-                  {addable.map((c) => (
-                    <AddableRow
-                      key={c.id}
-                      course={c}
-                      onPress={() => {
-                        if (!c.available) return;
-                        onEnrollCourse(c.id);
-                        onClose();
-                      }}
-                    />
-                  ))}
-                </View>
-              </>
-            )}
-          </View>
-        </SafeAreaView>
-      </View>
+        {mode === 'add' && (
+          <>
+            <Text style={styles.subtitle}>Pick another to start learning.</Text>
+            <ScrollView
+              contentContainerStyle={styles.listInner}
+              showsVerticalScrollIndicator={false}
+            >
+              {addable.length === 0 && (
+                <Text style={styles.empty}>You've enrolled in everything we've got.</Text>
+              )}
+              {addable.map((c) => (
+                <AddableRow
+                  key={c.id}
+                  course={c}
+                  onPress={() => {
+                    if (!c.available) return;
+                    onEnrollCourse(c.id);
+                    onClose();
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </>
+        )}
+      </SafeAreaView>
     </Modal>
   );
 }
@@ -204,29 +212,11 @@ function CloseIcon() {
 }
 
 const styles = StyleSheet.create({
-  modalRoot: { flex: 1 },
-  backdrop: {
+  sheetRoot: {
     flex: 1,
-    backgroundColor: 'rgba(42, 36, 24, 0.45)',
-  },
-  sheetWrap: {
     backgroundColor: colors.paper,
-  },
-  sheet: {
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-    backgroundColor: colors.paper,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  handle: {
-    alignSelf: 'center',
-    width: 44,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.line,
-    marginBottom: 14,
+    paddingTop: 16,
   },
   header: {
     flexDirection: 'row',
@@ -234,24 +224,19 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 4,
   },
+  headerSideBtn: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   title: {
     flex: 1,
     fontFamily: fonts.display,
     fontSize: 22,
     color: colors.ink,
     letterSpacing: -0.5,
-  },
-  backBtn: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeBtn: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+    textAlign: 'center',
   },
   subtitle: {
     fontFamily: fonts.body,
@@ -259,8 +244,9 @@ const styles = StyleSheet.create({
     color: colors.muted,
     marginBottom: 14,
   },
-  list: {
+  listInner: {
     gap: 8,
+    paddingBottom: 8,
   },
   row: {
     flexDirection: 'row',

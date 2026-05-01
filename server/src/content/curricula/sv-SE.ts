@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const swedish: LanguageContent = {
+  prefix: 'sv',
+  source: 'en-US',
+  target: 'sv-SE',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hej, hur mår du?',
+      tokens: ['Hej,', 'hur', 'mår', 'du?'],
+      distractors: ['hejdå', 'jag', 'är', 'bra'],
+      highlight: 'mår',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Jag mår bra, tack.',
+      tokens: ['Jag', 'mår', 'bra,', 'tack.'],
+      distractors: ['är', 'du', 'snälla', 'mycket'],
+      highlight: 'mår',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: 'Jag heter Marie.',
+      tokens: ['Jag', 'heter', 'Marie.'],
+      distractors: ['är', 'mitt', 'namn', 'du', 'heter'],
+      highlight: 'heter',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Trevligt att träffas.',
+      tokens: ['Trevligt', 'att', 'träffas.'],
+      distractors: ['bra', 'mycket', 'hej', 'möta'],
+      highlight: 'Trevligt',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Vi ses imorgon.',
+      tokens: ['Vi', 'ses', 'imorgon.'],
+      distractors: ['hejdå', 'snart', 'senare', 'idag'],
+      highlight: 'imorgon.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'ett' },
+    { source: 'two', target: 'två' },
+    { source: 'three', target: 'tre' },
+    { source: 'four', target: 'fyra' },
+    { source: 'five', target: 'fem' },
+    { source: 'six', target: 'sex' },
+    { source: 'seven', target: 'sju' },
+    { source: 'eight', target: 'åtta' },
+    { source: 'nine', target: 'nio' },
+    { source: 'ten', target: 'tio' },
+  ],
+  family: [
+    { source: 'mother', target: 'mamma' },
+    { source: 'father', target: 'pappa' },
+    { source: 'sister', target: 'syster' },
+    { source: 'brother', target: 'bror' },
+    { source: 'son', target: 'son' },
+    { source: 'daughter', target: 'dotter' },
+  ],
+  food: [
+    { source: 'bread', target: 'bröd' },
+    { source: 'water', target: 'vatten' },
+    { source: 'coffee', target: 'kaffe' },
+    { source: 'milk', target: 'mjölk' },
+    { source: 'apple', target: 'äpple' },
+    { source: 'cheese', target: 'ost' },
+  ],
+};

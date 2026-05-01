@@ -174,4 +174,46 @@ export const STORIES: Story[] = [
     thumbColor: 'berry',
     freeThisWeek: true,
   },
+
+  // Russian
+  {
+    id: 'ru-story-metro',
+    title: 'Утро в метро',
+    blurb: 'Холодное утро, тёплый кофе, и неожиданная встреча.',
+    language: 'ru-RU',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'sky',
+    freeThisWeek: true,
+  },
+  {
+    id: 'ru-story-dacha',
+    title: 'Выходные на даче',
+    blurb: 'Чай, варенье, и долгий разговор с соседкой.',
+    language: 'ru-RU',
+    level: 'A2',
+    minutes: 6,
+    thumbColor: 'moss',
+  },
+
+  // Swedish
+  {
+    id: 'sv-story-fika',
+    title: 'En fika i Stockholm',
+    blurb: 'Kanelbullar, kaffe, och en lugn eftermiddag.',
+    language: 'sv-SE',
+    level: 'A1',
+    minutes: 4,
+    thumbColor: 'butter',
+    freeThisWeek: true,
+  },
+  {
+    id: 'sv-story-skog',
+    title: 'En tur i skogen',
+    blurb: 'Mossa, sol, och tystnad.',
+    language: 'sv-SE',
+    level: 'A2',
+    minutes: 5,
+    thumbColor: 'moss',
+  },
 ];

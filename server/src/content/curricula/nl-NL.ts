@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const dutch: LanguageContent = {
+  prefix: 'nl',
+  source: 'en-US',
+  target: 'nl-NL',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hallo, hoe gaat het met je?',
+      tokens: ['Hallo,', 'hoe', 'gaat', 'het', 'met', 'je?'],
+      distractors: ['ik', 'goed', 'jij', 'ben', 'mij'],
+      highlight: 'gaat',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Het gaat goed, dank je.',
+      tokens: ['Het', 'gaat', 'goed,', 'dank', 'je.'],
+      distractors: ['ik', 'ben', 'graag', 'gedaan', 'jij'],
+      highlight: 'goed,',
+    },
+    {
+      prompt: 'My name is Marie.',
+      answer: 'Ik heet Marie.',
+      tokens: ['Ik', 'heet', 'Marie.'],
+      distractors: ['ben', 'mijn', 'naam', 'jij', 'heeft'],
+      highlight: 'heet',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Aangenaam.',
+      tokens: ['Aangenaam.'],
+      distractors: ['leuk', 'fijn', 'mooi', 'goed', 'hallo'],
+      highlight: 'Aangenaam.',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Tot morgen.',
+      tokens: ['Tot', 'morgen.'],
+      distractors: ['ziens', 'snel', 'later', 'doei'],
+      highlight: 'Tot',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'een' },
+    { source: 'two', target: 'twee' },
+    { source: 'three', target: 'drie' },
+    { source: 'four', target: 'vier' },
+    { source: 'five', target: 'vijf' },
+    { source: 'six', target: 'zes' },
+    { source: 'seven', target: 'zeven' },
+    { source: 'eight', target: 'acht' },
+    { source: 'nine', target: 'negen' },
+    { source: 'ten', target: 'tien' },
+  ],
+  family: [
+    { source: 'mother', target: 'moeder' },
+    { source: 'father', target: 'vader' },
+    { source: 'sister', target: 'zus' },
+    { source: 'brother', target: 'broer' },
+    { source: 'son', target: 'zoon' },
+    { source: 'daughter', target: 'dochter' },
+  ],
+  food: [
+    { source: 'bread', target: 'brood' },
+    { source: 'water', target: 'water' },
+    { source: 'coffee', target: 'koffie' },
+    { source: 'milk', target: 'melk' },
+    { source: 'apple', target: 'appel' },
+    { source: 'cheese', target: 'kaas' },
+  ],
+};

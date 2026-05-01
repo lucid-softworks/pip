@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const polish: LanguageContent = {
+  prefix: 'pl',
+  source: 'en-US',
+  target: 'pl-PL',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Cześć, jak się masz?',
+      tokens: ['Cześć,', 'jak', 'się', 'masz?'],
+      distractors: ['dzień', 'dobry', 'jestem', 'dobrze'],
+      highlight: 'masz?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Mam się dobrze, dziękuję.',
+      tokens: ['Mam', 'się', 'dobrze,', 'dziękuję.'],
+      distractors: ['proszę', 'bardzo', 'jestem', 'tak'],
+      highlight: 'dobrze,',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Mam na imię Maria.',
+      tokens: ['Mam', 'na', 'imię', 'Maria.'],
+      distractors: ['jestem', 'mi', 'nazywam', 'twoje', 'się'],
+      highlight: 'imię',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Miło mi cię poznać.',
+      tokens: ['Miło', 'mi', 'cię', 'poznać.'],
+      distractors: ['bardzo', 'dobrze', 'witam', 'spotkać'],
+      highlight: 'Miło',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Do jutra.',
+      tokens: ['Do', 'jutra.'],
+      distractors: ['widzenia', 'później', 'wkrótce', 'pa'],
+      highlight: 'jutra.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'jeden' },
+    { source: 'two', target: 'dwa' },
+    { source: 'three', target: 'trzy' },
+    { source: 'four', target: 'cztery' },
+    { source: 'five', target: 'pięć' },
+    { source: 'six', target: 'sześć' },
+    { source: 'seven', target: 'siedem' },
+    { source: 'eight', target: 'osiem' },
+    { source: 'nine', target: 'dziewięć' },
+    { source: 'ten', target: 'dziesięć' },
+  ],
+  family: [
+    { source: 'mother', target: 'matka' },
+    { source: 'father', target: 'ojciec' },
+    { source: 'sister', target: 'siostra' },
+    { source: 'brother', target: 'brat' },
+    { source: 'son', target: 'syn' },
+    { source: 'daughter', target: 'córka' },
+  ],
+  food: [
+    { source: 'bread', target: 'chleb' },
+    { source: 'water', target: 'woda' },
+    { source: 'coffee', target: 'kawa' },
+    { source: 'milk', target: 'mleko' },
+    { source: 'apple', target: 'jabłko' },
+    { source: 'cheese', target: 'ser' },
+  ],
+};

@@ -95,10 +95,10 @@ function UserIcon({ color }: IconProps) {
 
 const styles = StyleSheet.create({
   tabbar: {
-    height: 76,
+    height: 60,
     paddingTop: 8,
     paddingHorizontal: 16,
-    paddingBottom: 18,
+    paddingBottom: 6,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: colors.line,

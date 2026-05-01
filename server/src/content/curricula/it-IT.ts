@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const italian: LanguageContent = {
+  prefix: 'it',
+  source: 'en-US',
+  target: 'it-IT',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Ciao, come stai?',
+      tokens: ['Ciao,', 'come', 'stai?'],
+      distractors: ['salve', 'tu', 'sei', 'bene', 'molto'],
+      highlight: 'stai?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Sto bene, grazie.',
+      tokens: ['Sto', 'bene,', 'grazie.'],
+      distractors: ['sono', 'tu', 'molto', 'prego', 'come'],
+      highlight: 'Sto',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Mi chiamo Maria.',
+      tokens: ['Mi', 'chiamo', 'Maria.'],
+      distractors: ['nome', 'sono', 'ti', 'chiami', 'mio'],
+      highlight: 'chiamo',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Piacere di conoscerti.',
+      tokens: ['Piacere', 'di', 'conoscerti.'],
+      distractors: ['molto', 'bene', 'salve', 'ciao', 'incontrare'],
+      highlight: 'Piacere',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'A domani.',
+      tokens: ['A', 'domani.'],
+      distractors: ['arrivederci', 'più', 'tardi', 'presto'],
+      highlight: 'A',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'uno' },
+    { source: 'two', target: 'due' },
+    { source: 'three', target: 'tre' },
+    { source: 'four', target: 'quattro' },
+    { source: 'five', target: 'cinque' },
+    { source: 'six', target: 'sei' },
+    { source: 'seven', target: 'sette' },
+    { source: 'eight', target: 'otto' },
+    { source: 'nine', target: 'nove' },
+    { source: 'ten', target: 'dieci' },
+  ],
+  family: [
+    { source: 'mother', target: 'madre' },
+    { source: 'father', target: 'padre' },
+    { source: 'sister', target: 'sorella' },
+    { source: 'brother', target: 'fratello' },
+    { source: 'son', target: 'figlio' },
+    { source: 'daughter', target: 'figlia' },
+  ],
+  food: [
+    { source: 'bread', target: 'pane' },
+    { source: 'water', target: 'acqua' },
+    { source: 'coffee', target: 'caffè' },
+    { source: 'milk', target: 'latte' },
+    { source: 'apple', target: 'mela' },
+    { source: 'cheese', target: 'formaggio' },
+  ],
+};
