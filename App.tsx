@@ -42,7 +42,7 @@ import {
   getToken,
   setPrefs,
 } from '@/api/storage';
-import type { AuthSuccess, RemoteState } from '@/api/types';
+import type { AuthSuccess, RemoteProgress, RemoteState } from '@/api/types';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -70,6 +70,7 @@ export default function App() {
   const [enrolledCourses, setEnrolledCourses] = useState<Set<CourseId>>(
     () => new Set([DEFAULT_COURSE]),
   );
+  const [progress, setProgress] = useState<RemoteProgress[]>([]);
 
   // ---------- Hydration helpers ----------
 
@@ -93,6 +94,16 @@ export default function App() {
     }
     if (enrollments.length > 0) {
       setEnrolledCourses(new Set(enrollments.map((e) => e.courseId)));
+    }
+    setProgress(state.progress ?? []);
+  }, []);
+
+  const refreshProgress = useCallback(async () => {
+    try {
+      const state = await getState();
+      if (state) setProgress(state.progress ?? []);
+    } catch {
+      // Best-effort — leave existing progress in place on failure.
     }
   }, []);
 
@@ -236,6 +247,12 @@ export default function App() {
 
   const closeOverlay = useCallback(() => setOverlay({ kind: 'none' }), []);
 
+  const handleLessonComplete = useCallback(() => {
+    setOverlay({ kind: 'none' });
+    // Pull updated progress so home reflects the just-finished lesson.
+    refreshProgress();
+  }, [refreshProgress]);
+
   const handleBreather = useCallback(() => {
     setOverlay((o) =>
       o.kind === 'lesson'
@@ -288,6 +305,7 @@ export default function App() {
                     activeCourseId={activeCourseId}
                     enrolledCourses={enrolledCourses}
                     userName={userName}
+                    progress={progress}
                     onOpenLesson={openLesson}
                     onSwitchCourse={switchCourse}
                     onEnrollCourse={enrollCourse}
@@ -311,7 +329,7 @@ export default function App() {
                     lessonId={overlay.lessonId}
                     onExit={closeOverlay}
                     onNeedBreather={handleBreather}
-                    onComplete={closeOverlay}
+                    onComplete={handleLessonComplete}
                   />
                 </View>
               )}

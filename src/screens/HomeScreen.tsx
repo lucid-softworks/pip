@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -17,6 +17,7 @@ import {
   type Unit,
   parseCourseId,
 } from '@/data/types';
+import type { RemoteProgress } from '@/api/types';
 import { CheckIcon, ClockIcon, LeafIcon, TargetIcon } from '@/components/Icons';
 import { PlayIcon } from '@/components/PlayIcon';
 import { LanguageSheet } from '@/components/LanguageSheet';
@@ -25,6 +26,7 @@ type Props = {
   activeCourseId: CourseId;
   enrolledCourses: Set<CourseId>;
   userName: string;
+  progress: RemoteProgress[];
   onOpenLesson: (lessonId: string) => void;
   onSwitchCourse: (id: CourseId) => void;
   onEnrollCourse: (id: CourseId) => void;
@@ -34,10 +36,37 @@ const WEEK = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const TODAY_INDEX = 4;
 const DONE_DAYS = new Set([0, 1, 2, 3]);
 
+type ResolvedLesson = LessonStub & {
+  /** completedExercises / totalExercises if we have any progress for it. */
+  segments?: { done: number; total: number };
+};
+
+function resolveUnitState(unit: Unit, progress: RemoteProgress[]): ResolvedLesson[] {
+  const byId = new Map(progress.map((p) => [p.lessonId, p]));
+  let firstUnfinishedAssigned = false;
+
+  return unit.lessons.map((stub) => {
+    if (stub.state === 'story') return stub;
+    const p = byId.get(stub.id);
+    if (p?.completedAt) {
+      return { ...stub, state: 'done' as const };
+    }
+    const segments = p
+      ? { done: p.completedExercises, total: p.totalExercises }
+      : undefined;
+    if (!firstUnfinishedAssigned) {
+      firstUnfinishedAssigned = true;
+      return { ...stub, state: 'current' as const, segments };
+    }
+    return { ...stub, state: 'upcoming' as const, segments };
+  });
+}
+
 export function HomeScreen({
   activeCourseId,
   enrolledCourses,
   userName,
+  progress,
   onOpenLesson,
   onSwitchCourse,
   onEnrollCourse,
@@ -53,10 +82,18 @@ export function HomeScreen({
 
   const target = getLanguage(parseCourseId(activeCourseId).target);
 
+  const resolved = useMemo<ResolvedLesson[]>(() => {
+    if (!units || units.length === 0) return [];
+    return resolveUnitState(units[0], progress);
+  }, [units, progress]);
+
   if (!units || units.length === 0) return <View style={styles.root} />;
 
   const unit = units[0];
-  const currentLesson = unit.lessons.find((l) => l.state === 'current') ?? unit.lessons[0];
+  const currentLesson = resolved.find((l) => l.state === 'current') ?? resolved[0];
+  const allLessonsDone = resolved
+    .filter((l) => l.state !== 'story')
+    .every((l) => l.state === 'done');
 
   return (
     <View style={styles.root}>
@@ -122,45 +159,69 @@ export function HomeScreen({
             </Text>
           </View>
 
-          <Pressable
-            style={styles.currentCard}
-            onPress={() => onOpenLesson(currentLesson.id)}
-          >
-            <View style={styles.glow} />
-            <View style={styles.glow2} />
-            <View style={styles.cardRow1}>
-              <View style={styles.liveDot} />
-              <Text style={styles.cardKicker}>Pick up where you left off</Text>
-            </View>
-            <Text style={styles.cardTitle}>{currentLesson.title}</Text>
-            <View style={styles.progressTrack}>
-              {[true, true, false, false, false].map((done, i) => (
-                <View key={i} style={[styles.seg, done && styles.segDone]} />
-              ))}
-            </View>
-            <View style={styles.cardRow2}>
-              <View style={styles.metaRow}>
-                <View style={styles.metaItem}>
-                  <ClockIcon size={12} color={colors.paper} />
-                  <Text style={styles.metaText}>3 min</Text>
-                </View>
-                <View style={styles.metaItem}>
-                  <TargetIcon size={12} color={colors.paper} />
-                  <Text style={styles.metaText}>10 new words</Text>
-                </View>
+          {!allLessonsDone && (
+            <Pressable
+              style={styles.currentCard}
+              onPress={() => onOpenLesson(currentLesson.id)}
+            >
+              <View style={styles.glow} />
+              <View style={styles.glow2} />
+              <View style={styles.cardRow1}>
+                <View style={styles.liveDot} />
+                <Text style={styles.cardKicker}>
+                  {currentLesson.segments?.done
+                    ? 'Pick up where you left off'
+                    : 'Up next'}
+                </Text>
               </View>
-              <Pressable
-                style={styles.playCta}
-                onPress={() => onOpenLesson(currentLesson.id)}
-              >
-                <Text style={styles.playCtaText}>Resume</Text>
-                <PlayIcon size={11} color={colors.white} />
-              </Pressable>
+              <Text style={styles.cardTitle}>{currentLesson.title}</Text>
+              <View style={styles.progressTrack}>
+                {(() => {
+                  const total = currentLesson.segments?.total ?? 5;
+                  const done = currentLesson.segments?.done ?? 0;
+                  return Array.from({ length: total }).map((_, i) => (
+                    <View key={i} style={[styles.seg, i < done && styles.segDone]} />
+                  ));
+                })()}
+              </View>
+              <View style={styles.cardRow2}>
+                <View style={styles.metaRow}>
+                  <View style={styles.metaItem}>
+                    <ClockIcon size={12} color={colors.paper} />
+                    <Text style={styles.metaText}>3 min</Text>
+                  </View>
+                  <View style={styles.metaItem}>
+                    <TargetIcon size={12} color={colors.paper} />
+                    <Text style={styles.metaText}>
+                      {currentLesson.meta ?? 'A new lesson'}
+                    </Text>
+                  </View>
+                </View>
+                <Pressable
+                  style={styles.playCta}
+                  onPress={() => onOpenLesson(currentLesson.id)}
+                >
+                  <Text style={styles.playCtaText}>
+                    {currentLesson.segments?.done ? 'Resume' : 'Start'}
+                  </Text>
+                  <PlayIcon size={11} color={colors.white} />
+                </Pressable>
+              </View>
+            </Pressable>
+          )}
+
+          {allLessonsDone && (
+            <View style={styles.allDoneCard}>
+              <Text style={styles.allDoneTitle}>You did the whole unit. ✨</Text>
+              <Text style={styles.allDoneBody}>
+                Take a beat. The next unit will be here soon — and your finished lessons will
+                always be here to revisit.
+              </Text>
             </View>
-          </Pressable>
+          )}
 
           <View style={styles.lessonList}>
-            {unit.lessons
+            {resolved
               .filter((l) => l.state !== 'current')
               .map((l) => (
                 <LessonRow key={l.id} stub={l} onPress={() => onOpenLesson(l.id)} />
@@ -342,6 +403,25 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontFamily: fonts.bodyHeavy,
     textTransform: 'uppercase',
+  },
+  allDoneCard: {
+    padding: 18,
+    backgroundColor: colors.mossSoft,
+    borderRadius: 20,
+    marginBottom: 12,
+  },
+  allDoneTitle: {
+    fontFamily: fonts.display,
+    fontSize: 22,
+    color: colors.ink,
+    letterSpacing: -0.5,
+    marginBottom: 6,
+  },
+  allDoneBody: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.ink2,
+    lineHeight: 18,
   },
   currentCard: {
     backgroundColor: colors.ink,
