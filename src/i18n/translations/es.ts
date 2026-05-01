@@ -56,9 +56,9 @@ export const es: Partial<Translations> = {
   'onboarding.welcome.bullet.storiesOnly': 'Solo las historias son de pago',
   'onboarding.welcome.cta': 'Empezar',
 
-  'onboarding.step.1of4': 'Paso 1 de 4',
-  'onboarding.step.2of4': 'Paso 2 de 4',
-  'onboarding.step.3of4': 'Paso 3 de 4',
+  'onboarding.step.1of4': 'Paso 1 de 5',
+  'onboarding.step.2of4': 'Paso 2 de 5',
+  'onboarding.step.3of4': 'Paso 3 de 5',
 
   'onboarding.language.title': '¿Qué te gustaría aprender?',
   'onboarding.language.subtitle': 'Elige uno. Puedes añadir más luego.',
@@ -189,12 +189,31 @@ export const es: Partial<Translations> = {
   'progress.noStreaks.body':
     'Pip lleva la cuenta de lo que sabes, no de lo que faltaste. Cuando vuelves, retomas justo donde lo dejaste.',
 
+  // App language
+  'lang.appLanguage': 'Idioma de la app',
+  'lang.uiLocale.en': 'Inglés (English)',
+  'lang.uiLocale.es': 'Español',
+  'lang.uiLocale.fr': 'Francés (Français)',
+  'lang.uiLocale.de': 'Alemán (Deutsch)',
+  'lang.uiLocale.pt': 'Portugués (Português)',
+  'lang.uiLocale.it': 'Italiano',
+
+  // Onboarding extras (added in i18n-base-language commit)
+  'onboarding.step.4of4': 'Paso 4 de 5',
+  'onboarding.base.title': '¿Qué idioma hablas?',
+  'onboarding.base.subtitle':
+    'Para la interfaz de la app. El idioma a aprender viene después.',
+  'onboarding.base.deviceDefault': 'Detectado de tu dispositivo',
+
   // You / Settings
   'you.title': 'Tú',
   'you.subtitle': 'Ajustes a tu manera.',
   'you.profile.tagline': 'Toca para editar · gratis, todo el camino',
   'you.languageHint':
     'Toca el chip de idioma en Inicio para cambiar de curso o añadir uno nuevo.',
+  'you.section.language': 'Idioma',
+  'you.appLanguage.title': 'Idioma de la app',
+  'you.appLanguage.help': 'En qué idioma está la interfaz',
   'you.section.settings': 'Ajustes',
   'you.setting.slowSpeech.title': 'Habla más lenta',
   'you.setting.slowSpeech.help': 'Lee las instrucciones un poco más despacio',
