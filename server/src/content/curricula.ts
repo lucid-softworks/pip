@@ -1,13 +1,18 @@
 import {
   type Curriculum,
   type CourseId,
+  type Exercise,
   type LanguageTag,
-  type TranslateTapExercise,
   type Lesson,
+  type ListenSelectExercise,
+  type LocalizedText,
+  type MatchPairsExercise,
+  type MultipleChoiceExercise,
+  type TranslateTapExercise,
   makeCourseId,
 } from './types.ts';
 
-type GreetingExercise = {
+type Phrase = {
   prompt: string;
   answer: string;
   tokens: string[];
@@ -20,29 +25,104 @@ type GreetingsArgs = {
   source: LanguageTag;
   target: LanguageTag;
   unitName: string;
-  exercises: GreetingExercise[];
+  phrases: Phrase[];
 };
+
+function loc(text: string, language: LanguageTag): LocalizedText {
+  return { text, language };
+}
+
+function makeTranslateTap(
+  id: string,
+  phrase: Phrase,
+  source: LanguageTag,
+  target: LanguageTag,
+): TranslateTapExercise {
+  return {
+    kind: 'translate-tap',
+    id,
+    direction: 'source-to-target',
+    prompt: loc(phrase.prompt, source),
+    answer: loc(phrase.answer, target),
+    answerTokens: phrase.tokens,
+    distractors: phrase.distractors,
+    highlightToken: phrase.highlight,
+  };
+}
+
+function makeMultipleChoice(
+  id: string,
+  pickIdx: number,
+  phrases: Phrase[],
+  source: LanguageTag,
+  target: LanguageTag,
+): MultipleChoiceExercise {
+  const pick = phrases[pickIdx];
+  const distractorPhrases = phrases.filter((_, i) => i !== pickIdx).slice(0, 3);
+  return {
+    kind: 'multiple-choice',
+    id,
+    direction: 'source-to-target',
+    prompt: loc(pick.prompt, source),
+    correct: loc(pick.answer, target),
+    distractors: distractorPhrases.map((p) => loc(p.answer, target)),
+  };
+}
+
+function makeListenSelect(
+  id: string,
+  pickIdx: number,
+  phrases: Phrase[],
+  source: LanguageTag,
+  target: LanguageTag,
+): ListenSelectExercise {
+  const pick = phrases[pickIdx];
+  const distractorPhrases = phrases.filter((_, i) => i !== pickIdx).slice(0, 3);
+  return {
+    kind: 'listen-select',
+    id,
+    direction: 'target-to-source',
+    audio: loc(pick.answer, target),
+    correct: loc(pick.prompt, source),
+    distractors: distractorPhrases.map((p) => loc(p.prompt, source)),
+  };
+}
+
+function makeMatchPairs(
+  id: string,
+  pickedIdxs: number[],
+  phrases: Phrase[],
+  source: LanguageTag,
+  target: LanguageTag,
+): MatchPairsExercise {
+  return {
+    kind: 'match-pairs',
+    id,
+    pairs: pickedIdxs.map((i) => ({
+      source: loc(phrases[i].prompt, source),
+      target: loc(phrases[i].answer, target),
+    })),
+  };
+}
 
 function makeGreetingsCurriculum({
   prefix,
   source,
   target,
   unitName,
-  exercises,
+  phrases,
 }: GreetingsArgs): Curriculum {
   const lessonId = `${prefix}-unit-01-lesson-01-greetings`;
   const unitId = `${prefix}-unit-01`;
 
-  const exerciseObjs: TranslateTapExercise[] = exercises.map((ex, i) => ({
-    kind: 'translate-tap',
-    id: `ex-${(i + 1).toString().padStart(2, '0')}`,
-    direction: 'source-to-target',
-    prompt: { text: ex.prompt, language: source },
-    answer: { text: ex.answer, language: target },
-    answerTokens: ex.tokens,
-    distractors: ex.distractors,
-    highlightToken: ex.highlight,
-  }));
+  // 5-exercise mix that touches the same vocabulary through different modalities.
+  const exercises: Exercise[] = [
+    makeTranslateTap('ex-01', phrases[0], source, target),
+    makeMultipleChoice('ex-02', 1, phrases, source, target),
+    makeListenSelect('ex-03', 4, phrases, source, target),
+    makeMatchPairs('ex-04', [0, 1, 2, 3], phrases, source, target),
+    makeTranslateTap('ex-05', phrases[3], source, target),
+  ];
 
   const greetings: Lesson = {
     id: lessonId,
@@ -51,9 +131,9 @@ function makeGreetingsCurriculum({
     title: 'Greetings',
     sourceLanguage: source,
     targetLanguage: target,
-    estimatedMinutes: 3,
-    newWordCount: exerciseObjs.length * 3,
-    exercises: exerciseObjs,
+    estimatedMinutes: 4,
+    newWordCount: 12,
+    exercises,
   };
 
   return {
@@ -88,7 +168,7 @@ const french = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'fr-FR',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Bonjour, comment ça va ?',
@@ -132,7 +212,7 @@ const spanish = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'es-ES',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: '¿Hola, cómo estás?',
@@ -176,7 +256,7 @@ const italian = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'it-IT',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Ciao, come stai?',
@@ -220,7 +300,7 @@ const german = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'de-DE',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Hallo, wie geht es dir?',
@@ -264,7 +344,7 @@ const portuguese = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'pt-BR',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Olá, como vai você?',
@@ -308,7 +388,7 @@ const dutch = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'nl-NL',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Hallo, hoe gaat het met je?',
@@ -352,7 +432,7 @@ const polish = makeGreetingsCurriculum({
   source: 'en-US',
   target: 'pl-PL',
   unitName: 'Hello, world',
-  exercises: [
+  phrases: [
     {
       prompt: 'Hello, how are you?',
       answer: 'Cześć, jak się masz?',

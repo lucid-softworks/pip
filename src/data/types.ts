@@ -35,7 +35,40 @@ export type TranslateTapExercise = {
   highlightToken?: string;
 };
 
-export type Exercise = TranslateTapExercise;
+export type MultipleChoiceExercise = {
+  kind: 'multiple-choice';
+  id: string;
+  direction: Direction;
+  prompt: LocalizedText;
+  correct: LocalizedText;
+  distractors: LocalizedText[];
+};
+
+export type ListenSelectExercise = {
+  kind: 'listen-select';
+  id: string;
+  direction: Direction;
+  audio: LocalizedText;
+  correct: LocalizedText;
+  distractors: LocalizedText[];
+};
+
+export type MatchPair = {
+  source: LocalizedText;
+  target: LocalizedText;
+};
+
+export type MatchPairsExercise = {
+  kind: 'match-pairs';
+  id: string;
+  pairs: MatchPair[];
+};
+
+export type Exercise =
+  | TranslateTapExercise
+  | MultipleChoiceExercise
+  | ListenSelectExercise
+  | MatchPairsExercise;
 
 export type LessonStub = {
   id: string;
