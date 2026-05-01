@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const danish: LanguageContent = {
+  prefix: 'da',
+  source: 'en-US',
+  target: 'da-DK',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hej, hvordan har du det?',
+      tokens: ['Hej,', 'hvordan', 'har', 'du', 'det?'],
+      distractors: ['hvad', 'jeg', 'godt', 'tak'],
+      highlight: 'har',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Jeg har det godt, tak.',
+      tokens: ['Jeg', 'har', 'det', 'godt,', 'tak.'],
+      distractors: ['er', 'du', 'meget', 'velkommen'],
+      highlight: 'godt,',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Jeg hedder Maria.',
+      tokens: ['Jeg', 'hedder', 'Maria.'],
+      distractors: ['mit', 'navn', 'er', 'du', 'hedder'],
+      highlight: 'hedder',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Rart at møde dig.',
+      tokens: ['Rart', 'at', 'møde', 'dig.'],
+      distractors: ['hej', 'godt', 'meget', 'kende'],
+      highlight: 'møde',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Vi ses i morgen.',
+      tokens: ['Vi', 'ses', 'i', 'morgen.'],
+      distractors: ['farvel', 'snart', 'senere', 'i dag'],
+      highlight: 'morgen.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'en' },
+    { source: 'two', target: 'to' },
+    { source: 'three', target: 'tre' },
+    { source: 'four', target: 'fire' },
+    { source: 'five', target: 'fem' },
+    { source: 'six', target: 'seks' },
+    { source: 'seven', target: 'syv' },
+    { source: 'eight', target: 'otte' },
+    { source: 'nine', target: 'ni' },
+    { source: 'ten', target: 'ti' },
+  ],
+  family: [
+    { source: 'mother', target: 'mor' },
+    { source: 'father', target: 'far' },
+    { source: 'sister', target: 'søster' },
+    { source: 'brother', target: 'bror' },
+    { source: 'son', target: 'søn' },
+    { source: 'daughter', target: 'datter' },
+  ],
+  food: [
+    { source: 'bread', target: 'brød' },
+    { source: 'water', target: 'vand' },
+    { source: 'coffee', target: 'kaffe' },
+    { source: 'milk', target: 'mælk' },
+    { source: 'apple', target: 'æble' },
+    { source: 'cheese', target: 'ost' },
+  ],
+};

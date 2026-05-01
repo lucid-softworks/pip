@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const vietnamese: LanguageContent = {
+  prefix: 'vi',
+  source: 'en-US',
+  target: 'vi-VN',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Xin chào, bạn khỏe không?',
+      tokens: ['Xin', 'chào,', 'bạn', 'khỏe', 'không?'],
+      distractors: ['tôi', 'tạm', 'biệt', 'có', 'cảm'],
+      highlight: 'khỏe',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Tôi khỏe, cảm ơn.',
+      tokens: ['Tôi', 'khỏe,', 'cảm', 'ơn.'],
+      distractors: ['bạn', 'không', 'rất', 'vui'],
+      highlight: 'cảm',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Tên tôi là Maria.',
+      tokens: ['Tên', 'tôi', 'là', 'Maria.'],
+      distractors: ['bạn', 'gì', 'của', 'gọi'],
+      highlight: 'Tên',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Rất vui được gặp bạn.',
+      tokens: ['Rất', 'vui', 'được', 'gặp', 'bạn.'],
+      distractors: ['cảm', 'ơn', 'tôi', 'biết'],
+      highlight: 'gặp',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Hẹn gặp lại ngày mai.',
+      tokens: ['Hẹn', 'gặp', 'lại', 'ngày', 'mai.'],
+      distractors: ['tạm', 'biệt', 'sớm', 'hôm'],
+      highlight: 'mai.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'một' },
+    { source: 'two', target: 'hai' },
+    { source: 'three', target: 'ba' },
+    { source: 'four', target: 'bốn' },
+    { source: 'five', target: 'năm' },
+    { source: 'six', target: 'sáu' },
+    { source: 'seven', target: 'bảy' },
+    { source: 'eight', target: 'tám' },
+    { source: 'nine', target: 'chín' },
+    { source: 'ten', target: 'mười' },
+  ],
+  family: [
+    { source: 'mother', target: 'mẹ' },
+    { source: 'father', target: 'bố' },
+    { source: 'sister', target: 'chị gái' },
+    { source: 'brother', target: 'anh trai' },
+    { source: 'son', target: 'con trai' },
+    { source: 'daughter', target: 'con gái' },
+  ],
+  food: [
+    { source: 'bread', target: 'bánh mì' },
+    { source: 'water', target: 'nước' },
+    { source: 'coffee', target: 'cà phê' },
+    { source: 'milk', target: 'sữa' },
+    { source: 'apple', target: 'táo' },
+    { source: 'cheese', target: 'phô mai' },
+  ],
+};

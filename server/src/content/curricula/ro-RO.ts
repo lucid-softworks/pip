@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const romanian: LanguageContent = {
+  prefix: 'ro',
+  source: 'en-US',
+  target: 'ro-RO',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Bună, ce mai faci?',
+      tokens: ['Bună,', 'ce', 'mai', 'faci?'],
+      distractors: ['salut', 'sunt', 'bine', 'tu'],
+      highlight: 'faci?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Sunt bine, mulțumesc.',
+      tokens: ['Sunt', 'bine,', 'mulțumesc.'],
+      distractors: ['eu', 'tu', 'foarte', 'cu', 'plăcere'],
+      highlight: 'Sunt',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Mă numesc Maria.',
+      tokens: ['Mă', 'numesc', 'Maria.'],
+      distractors: ['eu', 'sunt', 'numele', 'meu', 'este'],
+      highlight: 'numesc',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Îmi pare bine.',
+      tokens: ['Îmi', 'pare', 'bine.'],
+      distractors: ['încântat', 'foarte', 'salut', 'cunoaștere'],
+      highlight: 'pare',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Pe mâine.',
+      tokens: ['Pe', 'mâine.'],
+      distractors: ['la', 'revedere', 'curând', 'azi'],
+      highlight: 'mâine.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'unu' },
+    { source: 'two', target: 'doi' },
+    { source: 'three', target: 'trei' },
+    { source: 'four', target: 'patru' },
+    { source: 'five', target: 'cinci' },
+    { source: 'six', target: 'șase' },
+    { source: 'seven', target: 'șapte' },
+    { source: 'eight', target: 'opt' },
+    { source: 'nine', target: 'nouă' },
+    { source: 'ten', target: 'zece' },
+  ],
+  family: [
+    { source: 'mother', target: 'mamă' },
+    { source: 'father', target: 'tată' },
+    { source: 'sister', target: 'soră' },
+    { source: 'brother', target: 'frate' },
+    { source: 'son', target: 'fiu' },
+    { source: 'daughter', target: 'fiică' },
+  ],
+  food: [
+    { source: 'bread', target: 'pâine' },
+    { source: 'water', target: 'apă' },
+    { source: 'coffee', target: 'cafea' },
+    { source: 'milk', target: 'lapte' },
+    { source: 'apple', target: 'măr' },
+    { source: 'cheese', target: 'brânză' },
+  ],
+};

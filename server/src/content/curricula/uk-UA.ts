@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const ukrainian: LanguageContent = {
+  prefix: 'uk',
+  source: 'en-US',
+  target: 'uk-UA',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Привіт, як справи?',
+      tokens: ['Привіт,', 'як', 'справи?'],
+      distractors: ['добрий', 'день', 'ти', 'добре'],
+      highlight: 'справи?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Все добре, дякую.',
+      tokens: ['Все', 'добре,', 'дякую.'],
+      distractors: ['будь', 'ласка', 'дуже', 'я'],
+      highlight: 'добре,',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Мене звуть Марія.',
+      tokens: ['Мене', 'звуть', 'Марія.'],
+      distractors: ['тебе', 'моє', 'імʼя', 'як', 'я'],
+      highlight: 'звуть',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Приємно познайомитися.',
+      tokens: ['Приємно', 'познайомитися.'],
+      distractors: ['дуже', 'радий', 'тебе', 'бачити'],
+      highlight: 'Приємно',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'До завтра.',
+      tokens: ['До', 'завтра.'],
+      distractors: ['побачення', 'скоро', 'пізніше', 'сьогодні'],
+      highlight: 'завтра.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'один' },
+    { source: 'two', target: 'два' },
+    { source: 'three', target: 'три' },
+    { source: 'four', target: 'чотири' },
+    { source: 'five', target: 'пʼять' },
+    { source: 'six', target: 'шість' },
+    { source: 'seven', target: 'сім' },
+    { source: 'eight', target: 'вісім' },
+    { source: 'nine', target: 'девʼять' },
+    { source: 'ten', target: 'десять' },
+  ],
+  family: [
+    { source: 'mother', target: 'мама' },
+    { source: 'father', target: 'тато' },
+    { source: 'sister', target: 'сестра' },
+    { source: 'brother', target: 'брат' },
+    { source: 'son', target: 'син' },
+    { source: 'daughter', target: 'донька' },
+  ],
+  food: [
+    { source: 'bread', target: 'хліб' },
+    { source: 'water', target: 'вода' },
+    { source: 'coffee', target: 'кава' },
+    { source: 'milk', target: 'молоко' },
+    { source: 'apple', target: 'яблуко' },
+    { source: 'cheese', target: 'сир' },
+  ],
+};

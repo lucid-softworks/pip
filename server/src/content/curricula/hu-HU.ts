@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const hungarian: LanguageContent = {
+  prefix: 'hu',
+  source: 'en-US',
+  target: 'hu-HU',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Szia, hogy vagy?',
+      tokens: ['Szia,', 'hogy', 'vagy?'],
+      distractors: ['jó', 'napot', 'én', 'te', 'jól'],
+      highlight: 'vagy?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Jól vagyok, köszönöm.',
+      tokens: ['Jól', 'vagyok,', 'köszönöm.'],
+      distractors: ['kérem', 'nagyon', 'szia', 'igen'],
+      highlight: 'Jól',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'A nevem Maria.',
+      tokens: ['A', 'nevem', 'Maria.'],
+      distractors: ['én', 'vagyok', 'te', 'engem', 'hívnak'],
+      highlight: 'nevem',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Örülök, hogy találkoztunk.',
+      tokens: ['Örülök,', 'hogy', 'találkoztunk.'],
+      distractors: ['nagyon', 'jó', 'téged', 'megismerni'],
+      highlight: 'Örülök,',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Holnap találkozunk.',
+      tokens: ['Holnap', 'találkozunk.'],
+      distractors: ['viszlát', 'később', 'ma', 'hamarosan'],
+      highlight: 'Holnap',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'egy' },
+    { source: 'two', target: 'kettő' },
+    { source: 'three', target: 'három' },
+    { source: 'four', target: 'négy' },
+    { source: 'five', target: 'öt' },
+    { source: 'six', target: 'hat' },
+    { source: 'seven', target: 'hét' },
+    { source: 'eight', target: 'nyolc' },
+    { source: 'nine', target: 'kilenc' },
+    { source: 'ten', target: 'tíz' },
+  ],
+  family: [
+    { source: 'mother', target: 'anya' },
+    { source: 'father', target: 'apa' },
+    { source: 'sister', target: 'nővér' },
+    { source: 'brother', target: 'fivér' },
+    { source: 'son', target: 'fiú' },
+    { source: 'daughter', target: 'lány' },
+  ],
+  food: [
+    { source: 'bread', target: 'kenyér' },
+    { source: 'water', target: 'víz' },
+    { source: 'coffee', target: 'kávé' },
+    { source: 'milk', target: 'tej' },
+    { source: 'apple', target: 'alma' },
+    { source: 'cheese', target: 'sajt' },
+  ],
+};

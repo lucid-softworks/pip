@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const finnish: LanguageContent = {
+  prefix: 'fi',
+  source: 'en-US',
+  target: 'fi-FI',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hei, mitä kuuluu?',
+      tokens: ['Hei,', 'mitä', 'kuuluu?'],
+      distractors: ['terve', 'minä', 'sinä', 'hyvää'],
+      highlight: 'kuuluu?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Kiitos, hyvää.',
+      tokens: ['Kiitos,', 'hyvää.'],
+      distractors: ['ole', 'hyvä', 'erittäin', 'olen'],
+      highlight: 'Kiitos,',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Nimeni on Maria.',
+      tokens: ['Nimeni', 'on', 'Maria.'],
+      distractors: ['minä', 'olen', 'sinä', 'sinun', 'mikä'],
+      highlight: 'Nimeni',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Hauska tutustua.',
+      tokens: ['Hauska', 'tutustua.'],
+      distractors: ['mukava', 'tavata', 'hei', 'kiva'],
+      highlight: 'Hauska',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Nähdään huomenna.',
+      tokens: ['Nähdään', 'huomenna.'],
+      distractors: ['hei', 'sitten', 'pian', 'tänään'],
+      highlight: 'huomenna.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'yksi' },
+    { source: 'two', target: 'kaksi' },
+    { source: 'three', target: 'kolme' },
+    { source: 'four', target: 'neljä' },
+    { source: 'five', target: 'viisi' },
+    { source: 'six', target: 'kuusi' },
+    { source: 'seven', target: 'seitsemän' },
+    { source: 'eight', target: 'kahdeksan' },
+    { source: 'nine', target: 'yhdeksän' },
+    { source: 'ten', target: 'kymmenen' },
+  ],
+  family: [
+    { source: 'mother', target: 'äiti' },
+    { source: 'father', target: 'isä' },
+    { source: 'sister', target: 'sisko' },
+    { source: 'brother', target: 'veli' },
+    { source: 'son', target: 'poika' },
+    { source: 'daughter', target: 'tytär' },
+  ],
+  food: [
+    { source: 'bread', target: 'leipä' },
+    { source: 'water', target: 'vesi' },
+    { source: 'coffee', target: 'kahvi' },
+    { source: 'milk', target: 'maito' },
+    { source: 'apple', target: 'omena' },
+    { source: 'cheese', target: 'juusto' },
+  ],
+};

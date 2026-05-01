@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const czech: LanguageContent = {
+  prefix: 'cs',
+  source: 'en-US',
+  target: 'cs-CZ',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Ahoj, jak se máš?',
+      tokens: ['Ahoj,', 'jak', 'se', 'máš?'],
+      distractors: ['dobrý', 'den', 'já', 'dobře'],
+      highlight: 'máš?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Mám se dobře, děkuji.',
+      tokens: ['Mám', 'se', 'dobře,', 'děkuji.'],
+      distractors: ['prosím', 'velmi', 'jsem', 'ano'],
+      highlight: 'dobře,',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Jmenuji se Maria.',
+      tokens: ['Jmenuji', 'se', 'Maria.'],
+      distractors: ['já', 'jsem', 'mé', 'jméno', 'je'],
+      highlight: 'Jmenuji',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Těší mě.',
+      tokens: ['Těší', 'mě.'],
+      distractors: ['velmi', 'rád', 'tě', 'poznat'],
+      highlight: 'Těší',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Uvidíme se zítra.',
+      tokens: ['Uvidíme', 'se', 'zítra.'],
+      distractors: ['nashledanou', 'brzy', 'dnes', 'pozdě'],
+      highlight: 'zítra.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'jedna' },
+    { source: 'two', target: 'dva' },
+    { source: 'three', target: 'tři' },
+    { source: 'four', target: 'čtyři' },
+    { source: 'five', target: 'pět' },
+    { source: 'six', target: 'šest' },
+    { source: 'seven', target: 'sedm' },
+    { source: 'eight', target: 'osm' },
+    { source: 'nine', target: 'devět' },
+    { source: 'ten', target: 'deset' },
+  ],
+  family: [
+    { source: 'mother', target: 'matka' },
+    { source: 'father', target: 'otec' },
+    { source: 'sister', target: 'sestra' },
+    { source: 'brother', target: 'bratr' },
+    { source: 'son', target: 'syn' },
+    { source: 'daughter', target: 'dcera' },
+  ],
+  food: [
+    { source: 'bread', target: 'chléb' },
+    { source: 'water', target: 'voda' },
+    { source: 'coffee', target: 'káva' },
+    { source: 'milk', target: 'mléko' },
+    { source: 'apple', target: 'jablko' },
+    { source: 'cheese', target: 'sýr' },
+  ],
+};

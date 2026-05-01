@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const portuguesePT: LanguageContent = {
+  prefix: 'ppt',
+  source: 'en-US',
+  target: 'pt-PT',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Olá, como estás?',
+      tokens: ['Olá,', 'como', 'estás?'],
+      distractors: ['oi', 'eu', 'bem', 'tudo', 'tu'],
+      highlight: 'estás?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Estou bem, obrigada.',
+      tokens: ['Estou', 'bem,', 'obrigada.'],
+      distractors: ['sou', 'tu', 'muito', 'por', 'favor'],
+      highlight: 'obrigada.',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Chamo-me Maria.',
+      tokens: ['Chamo-me', 'Maria.'],
+      distractors: ['eu', 'sou', 'meu', 'nome', 'é'],
+      highlight: 'Chamo-me',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Muito prazer.',
+      tokens: ['Muito', 'prazer.'],
+      distractors: ['bem', 'oi', 'tudo', 'gosto', 'olá'],
+      highlight: 'prazer.',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Até amanhã.',
+      tokens: ['Até', 'amanhã.'],
+      distractors: ['logo', 'depois', 'tchau', 'breve'],
+      highlight: 'Até',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'um' },
+    { source: 'two', target: 'dois' },
+    { source: 'three', target: 'três' },
+    { source: 'four', target: 'quatro' },
+    { source: 'five', target: 'cinco' },
+    { source: 'six', target: 'seis' },
+    { source: 'seven', target: 'sete' },
+    { source: 'eight', target: 'oito' },
+    { source: 'nine', target: 'nove' },
+    { source: 'ten', target: 'dez' },
+  ],
+  family: [
+    { source: 'mother', target: 'mãe' },
+    { source: 'father', target: 'pai' },
+    { source: 'sister', target: 'irmã' },
+    { source: 'brother', target: 'irmão' },
+    { source: 'son', target: 'filho' },
+    { source: 'daughter', target: 'filha' },
+  ],
+  food: [
+    { source: 'bread', target: 'pão' },
+    { source: 'water', target: 'água' },
+    { source: 'coffee', target: 'café' },
+    { source: 'milk', target: 'leite' },
+    { source: 'apple', target: 'maçã' },
+    { source: 'cheese', target: 'queijo' },
+  ],
+};

@@ -1,0 +1,73 @@
+import type { LanguageContent } from './builders.ts';
+
+export const catalan: LanguageContent = {
+  prefix: 'ca',
+  source: 'en-US',
+  target: 'ca-ES',
+  unitName: 'Hello, world',
+  greetings: [
+    {
+      prompt: 'Hello, how are you?',
+      answer: 'Hola, com estàs?',
+      tokens: ['Hola,', 'com', 'estàs?'],
+      distractors: ['adéu', 'tu', 'sóc', 'bé', 'què'],
+      highlight: 'estàs?',
+    },
+    {
+      prompt: "I'm fine, thank you.",
+      answer: 'Estic bé, gràcies.',
+      tokens: ['Estic', 'bé,', 'gràcies.'],
+      distractors: ['sóc', 'tu', 'molt', 'si', 'us', 'plau'],
+      highlight: 'Estic',
+    },
+    {
+      prompt: 'My name is Maria.',
+      answer: 'Em dic Maria.',
+      tokens: ['Em', 'dic', 'Maria.'],
+      distractors: ['el', 'meu', 'nom', 'és', 'tu'],
+      highlight: 'dic',
+    },
+    {
+      prompt: 'Nice to meet you.',
+      answer: 'Encantada.',
+      tokens: ['Encantada.'],
+      distractors: ['molt', 'gust', 'hola', 'bé'],
+      highlight: 'Encantada.',
+    },
+    {
+      prompt: 'See you tomorrow.',
+      answer: 'Fins demà.',
+      tokens: ['Fins', 'demà.'],
+      distractors: ['adéu', 'aviat', 'després', 'avui'],
+      highlight: 'demà.',
+    },
+  ],
+  numbers: [
+    { source: 'one', target: 'un' },
+    { source: 'two', target: 'dos' },
+    { source: 'three', target: 'tres' },
+    { source: 'four', target: 'quatre' },
+    { source: 'five', target: 'cinc' },
+    { source: 'six', target: 'sis' },
+    { source: 'seven', target: 'set' },
+    { source: 'eight', target: 'vuit' },
+    { source: 'nine', target: 'nou' },
+    { source: 'ten', target: 'deu' },
+  ],
+  family: [
+    { source: 'mother', target: 'mare' },
+    { source: 'father', target: 'pare' },
+    { source: 'sister', target: 'germana' },
+    { source: 'brother', target: 'germà' },
+    { source: 'son', target: 'fill' },
+    { source: 'daughter', target: 'filla' },
+  ],
+  food: [
+    { source: 'bread', target: 'pa' },
+    { source: 'water', target: 'aigua' },
+    { source: 'coffee', target: 'cafè' },
+    { source: 'milk', target: 'llet' },
+    { source: 'apple', target: 'poma' },
+    { source: 'cheese', target: 'formatge' },
+  ],
+};
