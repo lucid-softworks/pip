@@ -79,7 +79,7 @@ export function MultipleChoice({
         <Text style={styles.speakerText}>{exercise.prompt.text}</Text>
         <Pressable
           style={styles.playBtn}
-          onPress={() => speak(exercise.prompt.text, { language: exercise.prompt.language })}
+          onPress={() => speak(exercise.correct.text, { language: exercise.correct.language })}
           hitSlop={8}
         >
           <PlayIcon size={14} color={colors.ink} playing={speaking} />

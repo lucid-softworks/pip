@@ -8,8 +8,8 @@ export const spanish: LanguageContent = {
   greetings: [
     {
       prompt: 'Hello, how are you?',
-      answer: '¿Hola, cómo estás?',
-      tokens: ['¿Hola,', 'cómo', 'estás?'],
+      answer: 'Hola, ¿cómo estás?',
+      tokens: ['Hola,', '¿cómo', 'estás?'],
       distractors: ['adiós', 'tú', 'soy', 'bien', 'qué'],
       highlight: 'estás?',
     },

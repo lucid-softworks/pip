@@ -8,9 +8,9 @@ export const french: LanguageContent = {
   greetings: [
     {
       prompt: 'Hello, how are you?',
-      answer: 'Bonjour, comment ça va ?',
-      tokens: ['Bonjour,', 'comment', 'ça', 'va', '?'],
-      distractors: ['salut', 'tu', 'es', 'bien'],
+      answer: 'Salut, ça va ?',
+      tokens: ['Salut,', 'ça', 'va', '?'],
+      distractors: ['bonjour', 'tu', 'es', 'bien', 'comment'],
       highlight: 'ça',
     },
     {
@@ -29,10 +29,10 @@ export const french: LanguageContent = {
     },
     {
       prompt: 'Nice to meet you.',
-      answer: 'Enchantée de te rencontrer.',
-      tokens: ['Enchantée', 'de', 'te', 'rencontrer.'],
-      distractors: ['très', 'bien', 'je', 'vois', 'salut'],
-      highlight: 'Enchantée',
+      answer: 'Enchantée.',
+      tokens: ['Enchantée.'],
+      distractors: ['ravie', 'salut', 'bonjour', 'merci', 'bien'],
+      highlight: 'Enchantée.',
     },
     {
       prompt: 'See you tomorrow.',

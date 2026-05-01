@@ -5,7 +5,7 @@ import { fonts } from '@/theme/typography';
 import { CheckIcon, ClockIcon, TargetIcon } from '@/components/Icons';
 import { Mascot } from '@/components/Mascot';
 import { useSpeech } from '@/hooks/useSpeech';
-import type { Lesson } from '@/data/types';
+import type { Lesson, LocalizedText } from '@/data/types';
 
 type Props = {
   lesson: Lesson;
@@ -28,6 +28,29 @@ function pickCheer(seed: string) {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
   return CHEERS[h % CHEERS.length];
+}
+
+/**
+ * Find a phrase in the target language to read aloud after the lesson.
+ * We walk exercises in reverse so the user hears the most-recent thing they
+ * worked with. Match-pairs picks its first pair's target side.
+ */
+function pickTargetSnippet(lesson: Lesson): LocalizedText | null {
+  for (let i = lesson.exercises.length - 1; i >= 0; i--) {
+    const ex = lesson.exercises[i];
+    switch (ex.kind) {
+      case 'translate-tap':
+        return ex.answer;
+      case 'multiple-choice':
+        return ex.correct;
+      case 'listen-select':
+        return ex.audio;
+      case 'match-pairs':
+        if (ex.pairs.length > 0) return ex.pairs[0].target;
+        break;
+    }
+  }
+  return null;
 }
 
 function formatTime(seconds: number) {
@@ -73,12 +96,18 @@ export function LessonCelebration({
       }),
     ]).start();
 
-    // Soft TTS cue — read the lesson title in the target language as a tiny "you did it" moment.
-    const t = setTimeout(() => {
-      speak(lesson.title, { language: lesson.targetLanguage, rate: 0.85 });
-    }, 500);
-    return () => clearTimeout(t);
-  }, [lesson.id, lesson.title, lesson.targetLanguage, scale, opacity, lift, speak]);
+    // Soft TTS cue — read one of the target-language phrases the user just
+    // learned (the last exercise's answer), so the language they heard is the
+    // language they're learning, not the English lesson title pronounced with
+    // a target-language voice.
+    const targetSnippet = pickTargetSnippet(lesson);
+    if (targetSnippet) {
+      const t = setTimeout(() => {
+        speak(targetSnippet.text, { language: targetSnippet.language, rate: 0.85 });
+      }, 500);
+      return () => clearTimeout(t);
+    }
+  }, [lesson, scale, opacity, lift, speak]);
 
   return (
     <View style={styles.root}>
