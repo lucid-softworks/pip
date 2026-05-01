@@ -8,6 +8,7 @@ import { PlayIcon } from '@/components/PlayIcon';
 import { loadLesson } from '@/data/lessons';
 import type { Lesson, TranslateTapExercise } from '@/data/types';
 import { useSpeech } from '@/hooks/useSpeech';
+import { updateProgress } from '@/api/client';
 
 type Props = {
   lessonId: string;
@@ -22,6 +23,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [wrongStreak, setWrongStreak] = useState(0);
+  const [completedCount, setCompletedCount] = useState(0);
 
   useEffect(() => {
     loadLesson(lessonId).then(setLesson);
@@ -32,9 +34,24 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
   const exercise = lesson.exercises[exerciseIndex] as TranslateTapExercise;
   const progress = (exerciseIndex + 1) / lesson.exercises.length;
 
+  const pushProgress = (count: number, finished: boolean) => {
+    if (!lesson) return;
+    updateProgress({
+      lessonId: lesson.id,
+      completedExercises: count,
+      totalExercises: lesson.exercises.length,
+      completed: finished,
+    }).catch(() => {
+      // Fire-and-forget — UI shouldn't block on a slow network.
+    });
+  };
+
   const handleResult = (correct: boolean) => {
     if (correct) {
       setWrongStreak(0);
+      const next = completedCount + 1;
+      setCompletedCount(next);
+      pushProgress(next, false);
     } else {
       const next = wrongStreak + 1;
       setWrongStreak(next);
@@ -47,6 +64,7 @@ export function LessonScreen({ lessonId, onExit, onNeedBreather, onComplete }: P
 
   const handleNext = () => {
     if (exerciseIndex >= lesson.exercises.length - 1) {
+      pushProgress(completedCount, true);
       onComplete();
     } else {
       setExerciseIndex((i) => i + 1);

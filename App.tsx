@@ -27,14 +27,21 @@ import { AuthScreen } from '@/screens/AuthScreen';
 import { TabBar, type TabKey } from '@/components/TabBar';
 import { colors } from '@/theme/colors';
 import { type CourseId, makeCourseId, parseCourseId } from '@/data/courses';
-import { getMe, signOut } from '@/api/client';
+import {
+  addEnrollment,
+  getMe,
+  getState,
+  signOut,
+  updateProfile,
+  updateProgress,
+} from '@/api/client';
 import {
   clearPrefs,
   getPrefs,
   getToken,
   setPrefs,
 } from '@/api/storage';
-import type { AuthSuccess } from '@/api/types';
+import type { AuthSuccess, RemoteState } from '@/api/types';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -63,6 +70,31 @@ export default function App() {
     () => new Set([DEFAULT_COURSE]),
   );
 
+  // ---------- Hydration helpers ----------
+
+  const applyRemoteState = useCallback(async (state: RemoteState) => {
+    const { profile, enrollments } = state;
+    if (profile) {
+      const name = profile.preferredName ?? null;
+      if (name) setUserName(name);
+      setDailyMinutes(profile.dailyMinutesGoal);
+      if (profile.activeCourseId) setActiveCourseId(profile.activeCourseId);
+      setOnboarded(Boolean(profile.preferredName));
+      await setPrefs({
+        onboarded: Boolean(profile.preferredName),
+        userName: name,
+        dailyMinutes: profile.dailyMinutesGoal,
+        activeCourseId: profile.activeCourseId,
+      });
+    } else {
+      setOnboarded(false);
+      await setPrefs({ onboarded: false });
+    }
+    if (enrollments.length > 0) {
+      setEnrolledCourses(new Set(enrollments.map((e) => e.courseId)));
+    }
+  }, []);
+
   // ---------- Boot: load token + prefs, validate session ----------
 
   useEffect(() => {
@@ -88,13 +120,18 @@ export default function App() {
           return;
         }
         setAccountName(me.user.name);
+
+        // Pull server state and let it overwrite local prefs — server wins.
+        const state = await getState();
+        if (state) await applyRemoteState(state);
+
         setAuthPhase('authed');
       } catch {
         // Network failure on boot — keep them on auth screen so they can retry.
         setAuthPhase('unauth');
       }
     })();
-  }, []);
+  }, [applyRemoteState]);
 
   // ---------- Auth callbacks ----------
 
@@ -107,11 +144,19 @@ export default function App() {
         await setPrefs({ onboarded: false, userName: result.user.name });
         setUserName(result.user.name);
         setOnboarded(false);
+      } else {
+        // Existing user — pull whatever they had on another device.
+        try {
+          const state = await getState();
+          if (state) await applyRemoteState(state);
+        } catch {
+          // If sync fails, fall back to local prefs (already loaded above).
+        }
       }
 
       setAuthPhase('authed');
     },
-    [],
+    [applyRemoteState],
   );
 
   const handleSignOut = useCallback(async () => {
@@ -141,9 +186,20 @@ export default function App() {
       dailyMinutes: result.dailyMinutes,
       activeCourseId: result.courseId,
     });
+    // Push to server in parallel; failures are non-fatal here since prefs are saved locally.
+    Promise.all([
+      updateProfile({
+        preferredName: result.userName,
+        dailyMinutesGoal: result.dailyMinutes,
+        activeCourseId: result.courseId,
+      }),
+      addEnrollment(result.courseId),
+    ]).catch(() => {
+      // Silent — user can retry implicitly the next time they make a change.
+    });
   }, []);
 
-  // ---------- Course callbacks (persist) ----------
+  // ---------- Course callbacks (persist locally + remotely) ----------
 
   const enrollCourse = useCallback(async (id: CourseId) => {
     setEnrolledCourses((set) => {
@@ -154,11 +210,13 @@ export default function App() {
     });
     setActiveCourseId(id);
     await setPrefs({ activeCourseId: id });
+    Promise.all([addEnrollment(id), updateProfile({ activeCourseId: id })]).catch(() => {});
   }, []);
 
   const switchCourse = useCallback(async (id: CourseId) => {
     setActiveCourseId(id);
     await setPrefs({ activeCourseId: id });
+    updateProfile({ activeCourseId: id }).catch(() => {});
   }, []);
 
   const activeTarget = parseCourseId(activeCourseId).target;

@@ -1,6 +1,15 @@
 import { API_BASE_URL } from '@/config';
 import { clearToken, getToken, setToken } from './storage';
-import type { AuthSession, AuthSuccess, AuthUser } from './types';
+import type {
+  AuthSession,
+  AuthSuccess,
+  AuthUser,
+  ProfilePatch,
+  ProgressUpdate,
+  RemoteEnrollment,
+  RemoteProfile,
+  RemoteState,
+} from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -104,4 +113,41 @@ export async function getMe(): Promise<{ user: AuthUser; session: AuthSession } 
     if (e instanceof ApiError && e.status === 401) return null;
     throw e;
   }
+}
+
+// ---------- App state sync ----------
+
+export async function getState(): Promise<RemoteState | null> {
+  try {
+    return await request<RemoteState>('/api/me/state');
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 401) return null;
+    throw e;
+  }
+}
+
+export async function updateProfile(patch: ProfilePatch): Promise<RemoteProfile> {
+  const data = await request<{ profile: RemoteProfile }>('/api/me/profile', {
+    method: 'PUT',
+    body: JSON.stringify(patch),
+  });
+  return data.profile;
+}
+
+export async function addEnrollment(courseId: string): Promise<RemoteEnrollment | null> {
+  const data = await request<{ enrollment: RemoteEnrollment | null }>(
+    '/api/me/enrollments',
+    {
+      method: 'POST',
+      body: JSON.stringify({ courseId }),
+    },
+  );
+  return data.enrollment;
+}
+
+export async function updateProgress(update: ProgressUpdate): Promise<void> {
+  await request('/api/me/progress', {
+    method: 'PUT',
+    body: JSON.stringify(update),
+  });
 }
