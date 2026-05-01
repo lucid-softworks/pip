@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -30,6 +30,9 @@ export function AuthScreen({ onAuthed }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
   const submit = async () => {
     if (loading) return;
     setError(null);
@@ -56,7 +59,7 @@ export function AuthScreen({ onAuthed }: Props) {
       onAuthed(result, mode);
     } catch (e) {
       if (e instanceof NetworkError) {
-        setError("Couldn't reach pip-server. Is it running?");
+        setError(e.message);
       } else if (e instanceof ApiError) {
         setError(e.friendly);
       } else {
@@ -75,6 +78,7 @@ export function AuthScreen({ onAuthed }: Props) {
       <ScrollView
         contentContainerStyle={styles.scrollInner}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.art}>
@@ -121,10 +125,13 @@ export function AuthScreen({ onAuthed }: Props) {
             autoCorrect={false}
             textContentType="name"
             placeholder="What should we call you?"
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current?.focus()}
           />
         )}
 
         <Field
+          ref={emailRef}
           label="Email"
           value={email}
           onChangeText={setEmail}
@@ -133,9 +140,12 @@ export function AuthScreen({ onAuthed }: Props) {
           keyboardType="email-address"
           textContentType="emailAddress"
           placeholder="you@somewhere.com"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
         <Field
+          ref={passwordRef}
           label="Password"
           value={password}
           onChangeText={setPassword}
@@ -179,18 +189,19 @@ export function AuthScreen({ onAuthed }: Props) {
 
 type FieldProps = React.ComponentProps<typeof TextInput> & { label: string };
 
-function Field({ label, ...props }: FieldProps) {
+const Field = ({ label, ref, ...props }: FieldProps & { ref?: React.Ref<TextInput> }) => {
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
       <TextInput
+        ref={ref}
         {...props}
         style={styles.fieldInput}
         placeholderTextColor={colors.muted}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.paper },
@@ -198,7 +209,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: 24,
-    flexGrow: 1,
   },
 
   art: {
